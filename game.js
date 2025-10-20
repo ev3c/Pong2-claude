@@ -118,6 +118,16 @@ function adjustCanvasSize() {
     canvas.width = canvasBaseWidth;
     canvas.height = canvasBaseHeight;
     
+    // Actualizar tamaño de las palas según el dispositivo
+    const paddleSize = getPaddleSize();
+    player.width = paddleSize.width;
+    player.height = paddleSize.height;
+    computer.width = paddleSize.width;
+    computer.height = paddleSize.height;
+    
+    // Actualizar tamaño de la pelota según el dispositivo
+    ball.radius = getBallSize();
+    
     // Ajustar altura de los sliders siempre (táctiles y desktop)
     if (touchSlider) {
         touchSlider.style.height = canvasBaseHeight + 'px';
@@ -223,15 +233,44 @@ let computerReactionDelay = 0;
 
 // Función para obtener posición inicial vertical centrada
 function getCenterY() {
-    return canvas.height / 2 - 35;
+    const paddleHeight = getPaddleSize().height;
+    return canvas.height / 2 - paddleHeight / 2;
+}
+
+// Función para obtener tamaño de palas según el dispositivo
+function getPaddleSize() {
+    if (isTouchDevice()) {
+        // En smartphones/tablets las palas son más pequeñas
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        const isPortraitMode = screenHeight > screenWidth;
+        
+        let isSmartphone;
+        if (isPortraitMode) {
+            isSmartphone = screenWidth <= 768;
+        } else {
+            isSmartphone = screenWidth <= 896;
+        }
+        
+        if (isSmartphone) {
+            // Smartphones: palas muy pequeñas
+            return { width: 6, height: 40 };
+        } else {
+            // Tablets: palas medianas
+            return { width: 8, height: 55 };
+        }
+    } else {
+        // Desktop: palas tamaño normal
+        return { width: 10, height: 70 };
+    }
 }
 
 // Paleta del jugador (ahora a la derecha)
 const player = {
     x: canvas.width - 20,
     y: getCenterY(),
-    width: 10,
-    height: 70,
+    width: getPaddleSize().width,
+    height: getPaddleSize().height,
     speed: 8,
     dy: 0
 };
@@ -240,17 +279,44 @@ const player = {
 const computer = {
     x: 10,
     y: getCenterY(),
-    width: 10,
-    height: 70,
+    width: getPaddleSize().width,
+    height: getPaddleSize().height,
     speed: 3, // Velocidad inicial baja
     dy: 0 // Velocidad de movimiento para modo 2 jugadores
 };
+
+// Función para obtener tamaño de pelota según el dispositivo
+function getBallSize() {
+    if (isTouchDevice()) {
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        const isPortraitMode = screenHeight > screenWidth;
+        
+        let isSmartphone;
+        if (isPortraitMode) {
+            isSmartphone = screenWidth <= 768;
+        } else {
+            isSmartphone = screenWidth <= 896;
+        }
+        
+        if (isSmartphone) {
+            // Smartphones: pelota más pequeña
+            return 5;
+        } else {
+            // Tablets: pelota mediana
+            return 6;
+        }
+    } else {
+        // Desktop: pelota tamaño normal
+        return 8;
+    }
+}
 
 // Pelota
 const ball = {
     x: canvas.width / 2,
     y: canvas.height / 2,
-    radius: 8,
+    radius: getBallSize(),
     speed: 5,
     dx: 5,
     dy: 5,
@@ -360,25 +426,35 @@ function drawRoundedRect(x, y, width, height, radius) {
 // Dibujar la paleta del jugador
 function drawPlayer() {
     ctx.fillStyle = '#00ff88';
-    ctx.shadowBlur = 15;
+    // Ajustar shadowBlur según el tamaño de la pala
+    const shadowSize = isTouchDevice() ? 8 : 15;
+    ctx.shadowBlur = shadowSize;
     ctx.shadowColor = '#00ff88';
-    drawRoundedRect(player.x, player.y, player.width, player.height, 5);
+    // Radio de borde proporcional al ancho de la pala
+    const borderRadius = Math.min(3, player.width / 2);
+    drawRoundedRect(player.x, player.y, player.width, player.height, borderRadius);
     ctx.shadowBlur = 0;
 }
 
 // Dibujar la paleta de la computadora
 function drawComputer() {
     ctx.fillStyle = '#ff4757';
-    ctx.shadowBlur = 15;
+    // Ajustar shadowBlur según el tamaño de la pala
+    const shadowSize = isTouchDevice() ? 8 : 15;
+    ctx.shadowBlur = shadowSize;
     ctx.shadowColor = '#ff4757';
-    drawRoundedRect(computer.x, computer.y, computer.width, computer.height, 5);
+    // Radio de borde proporcional al ancho de la pala
+    const borderRadius = Math.min(3, computer.width / 2);
+    drawRoundedRect(computer.x, computer.y, computer.width, computer.height, borderRadius);
     ctx.shadowBlur = 0;
 }
 
 // Dibujar la pelota
 function drawBall() {
     ctx.fillStyle = '#ffa502';
-    ctx.shadowBlur = 20;
+    // Ajustar shadowBlur según el dispositivo
+    const shadowSize = isTouchDevice() ? 10 : 20;
+    ctx.shadowBlur = shadowSize;
     ctx.shadowColor = '#ffa502';
     ctx.beginPath();
     ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
