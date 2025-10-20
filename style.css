@@ -1,0 +1,1319 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height - excluye barras del navegador */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%; /* Evita que iOS haga zoom automático en el texto */
+    position: relative;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+    overflow-x: hidden;
+}
+
+.screen {
+    display: none;
+    width: 100%;
+}
+
+.screen.active {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.header {
+    text-align: center;
+    color: white;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.header h1 {
+    font-size: 4rem;
+    font-weight: bold;
+    letter-spacing: 10px;
+    margin-bottom: 10px;
+}
+
+.version {
+    font-size: 1.5rem;
+    font-weight: normal;
+    opacity: 0.8;
+    letter-spacing: 2px;
+}
+
+.device-info {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+#deviceType {
+    font-weight: bold;
+    color: #ffa502;
+    text-shadow: 0 0 10px rgba(255, 165, 2, 0.6);
+}
+
+/* ========================================
+   ESTILOS PARA LAPTOP (Desktop)
+   Por defecto, ya está configurado arriba
+   ======================================== */
+
+/* Estilos para device-info en diferentes dispositivos */
+
+.subtitle {
+    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin-top: 10px;
+}
+
+.menu-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 700px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.start-button-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.btn-large {
+    padding: 20px 60px;
+    font-size: 1.4rem;
+    transform: scale(1);
+    transition: all 0.3s ease;
+}
+
+.btn-large:hover {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+}
+
+.btn-tertiary {
+    background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+}
+
+
+.game-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow-x: hidden;
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.score-board {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    color: white;
+}
+
+.player-score, .computer-score, .level-score {
+    text-align: center;
+    flex: 1;
+}
+
+.level-score .label {
+    color: rgba(255, 255, 255, 0.95);
+}
+
+.level-number {
+    color: #ffa502;
+    text-shadow: 0 0 10px rgba(255, 165, 2, 0.6);
+}
+
+.label {
+    display: block;
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+    opacity: 0.9;
+    white-space: nowrap;
+}
+
+.score {
+    display: block;
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.game-area {
+    display: flex;
+    align-items: stretch;
+    gap: 15px;
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto 20px;
+    justify-content: center;
+    overflow-x: hidden;
+    overflow-y: visible;
+}
+
+#pongCanvas {
+    display: block;
+    background: #1a1a2e;
+    border-radius: 10px;
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    max-width: 100%;
+    height: auto;
+}
+
+#pongCanvas:hover {
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5), 0 0 20px rgba(102, 126, 234, 0.4);
+    transform: scale(1.01);
+}
+
+/* Barra de desplazamiento táctil - SIEMPRE VISIBLE */
+.touch-slider {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 40px;
+    height: 500px;
+    background: rgba(102, 126, 234, 0.2);
+    border-radius: 20px;
+    border: 2px solid rgba(102, 126, 234, 0.4);
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.touch-slider:hover {
+    background: rgba(0, 255, 136, 0.25);
+    border-color: rgba(0, 255, 136, 0.5);
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+}
+
+.touch-slider-left {
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 71, 87, 0.2);
+    border: 2px solid rgba(255, 71, 87, 0.4);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.touch-slider-left:hover {
+    background: rgba(255, 71, 87, 0.3);
+    border-color: rgba(255, 71, 87, 0.6);
+    box-shadow: 0 0 15px rgba(255, 71, 87, 0.4);
+}
+
+.touch-slider-left .slider-knob {
+    background: linear-gradient(135deg, rgba(255, 71, 87, 0.8) 0%, rgba(204, 57, 70, 0.8) 100%);
+    box-shadow: 0 2px 8px rgba(255, 71, 87, 0.4);
+}
+
+.touch-slider-left .slider-knob:active {
+    background: linear-gradient(135deg, rgba(255, 71, 87, 1) 0%, rgba(204, 57, 70, 1) 100%);
+    box-shadow: 0 4px 12px rgba(255, 71, 87, 0.6);
+}
+
+.slider-knob {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 35px;
+    height: 35px;
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.8) 0%, rgba(0, 204, 106, 0.8) 100%);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 255, 136, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    touch-action: none;
+    transition: all 0.2s ease;
+}
+
+.slider-knob:active {
+    background: linear-gradient(135deg, rgba(0, 255, 136, 1) 0%, rgba(0, 204, 106, 1) 100%);
+    box-shadow: 0 4px 12px rgba(0, 255, 136, 0.6);
+    transform: translateX(-50%) scale(1.1);
+}
+
+/* Los sliders ya están siempre visibles */
+
+
+.game-mode {
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.game-mode label {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #667eea;
+    margin-right: 10px;
+}
+
+.mode-selector {
+    padding: 8px 15px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 2px solid #667eea;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mode-selector:hover {
+    border-color: #764ba2;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.mode-selector:focus {
+    outline: none;
+    border-color: #764ba2;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.controls {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.audio-controls {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 25px;
+}
+
+.audio-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.audio-btn:hover {
+    background: rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.5);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.audio-btn:active {
+    transform: scale(0.95);
+}
+
+.btn {
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.instructions {
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    color: #333;
+}
+
+.instructions h3 {
+    margin-bottom: 15px;
+    color: #667eea;
+}
+
+.instructions p {
+    margin: 10px 0;
+    font-size: 1rem;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 50px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    animation: modalAppear 0.3s ease;
+}
+
+@keyframes modalAppear {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #667eea;
+}
+
+.modal-content p {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+/* ========================================
+   ESTILOS PARA TABLET
+   Portrait: 769px - 1024px
+   Landscape: 897px - 1366px
+   ======================================== */
+@media (min-width: 769px) and (max-width: 1024px), (min-width: 897px) and (max-width: 1366px) and (orientation: landscape) {
+    body {
+        padding: 12px;
+    }
+    
+    .header h1 {
+        font-size: 2.8rem;
+        letter-spacing: 7px;
+    }
+    
+    .version {
+        font-size: 1.2rem;
+    }
+    
+    .menu-container {
+        padding: 30px 25px;
+        max-width: 700px;
+    }
+    
+    .game-mode {
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+    
+    .game-mode label {
+        font-size: 1rem;
+    }
+    
+    .mode-selector {
+        padding: 10px 15px;
+        font-size: 1rem;
+    }
+    
+    .audio-btn {
+        width: 55px;
+        height: 55px;
+        font-size: 1.5rem;
+    }
+    
+    .instructions {
+        padding: 16px;
+    }
+    
+    .instructions h3 {
+        font-size: 1.05rem;
+    }
+    
+    .instructions p {
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+    
+    .btn-large {
+        padding: 16px 45px;
+        font-size: 1.2rem;
+    }
+    
+    .game-container {
+        padding: 20px 15px;
+    }
+    
+    .score-board {
+        padding: 10px 15px;
+        margin-bottom: 10px;
+    }
+    
+    .label {
+        font-size: 0.85rem;
+    }
+    
+    .score {
+        font-size: 1.8rem;
+    }
+    
+    .game-area {
+        gap: 10px;
+        margin-bottom: 12px;
+    }
+    
+    .controls {
+        gap: 10px;
+        margin-top: 10px;
+    }
+    
+    .btn {
+        padding: 11px 20px;
+        font-size: 0.95rem;
+    }
+    
+    .modal-content {
+        padding: 35px 25px;
+    }
+    
+    .modal-content h2 {
+        font-size: 2rem;
+    }
+    
+    .modal-content p {
+        font-size: 1.3rem;
+    }
+}
+
+/* Tablets - Ajuste de tamaño de sliders */
+@media (min-width: 769px) and (max-width: 1024px), (min-width: 897px) and (max-width: 1366px) and (orientation: landscape) {
+    .touch-slider,
+    .touch-slider-left {
+        width: 38px;
+        min-height: 320px;
+    }
+    
+    .slider-knob {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .device-info {
+        font-size: 0.85rem;
+    }
+}
+
+/* ========================================
+   ESTILOS PARA SMARTPHONE
+   Portrait: ≤ 768px
+   Landscape: ≤ 896px
+   REDUCIDO 60% (40% del tamaño original)
+   ======================================== */
+@media (max-width: 768px), (max-width: 896px) and (orientation: landscape) {
+    body {
+        padding: 2px;
+    }
+    
+    .container {
+        max-width: 100%;
+        width: 100%;
+    }
+    
+    .header {
+        margin-bottom: 3px;
+    }
+    
+    .header h1 {
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+        margin-bottom: 2px;
+    }
+    
+    .version {
+        font-size: 0.45rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .device-info {
+        font-size: 0.5rem;
+        margin-top: 2px;
+    }
+    
+    .menu-container {
+        padding: 6px 5px;
+        border-radius: 6px;
+    }
+    
+    .game-mode {
+        padding: 5px;
+        margin-bottom: 6px;
+    }
+    
+    .game-mode label {
+        display: block;
+        margin-bottom: 2px;
+        font-size: 0.5rem;
+    }
+    
+    .mode-selector {
+        width: 100%;
+        padding: 4px 5px;
+        font-size: 0.5rem;
+    }
+    
+    .audio-controls {
+        margin-bottom: 6px;
+    }
+    
+    .audio-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.85rem;
+    }
+    
+    .instructions {
+        padding: 5px;
+    }
+    
+    .instructions h3 {
+        font-size: 0.55rem;
+        margin-bottom: 4px;
+    }
+    
+    .instructions p {
+        font-size: 0.45rem;
+        margin: 2px 0;
+        line-height: 1.2;
+    }
+    
+    .btn-large {
+        width: 100%;
+        padding: 6px 12px;
+        font-size: 0.6rem;
+    }
+    
+    .game-container {
+        padding: 5px 3px;
+        border-radius: 5px;
+    }
+    
+    .score-board {
+        padding: 3px 4px;
+        margin-bottom: 3px;
+    }
+    
+    .label {
+        font-size: 0.4rem;
+    }
+    
+    .score {
+        font-size: 0.75rem;
+    }
+    
+    .game-area {
+        gap: 2px;
+        max-width: 100%;
+        margin-bottom: 4px;
+    }
+    
+    .touch-slider {
+        width: 20px;
+        min-height: 140px;
+    }
+    
+    .slider-knob {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .controls {
+        flex-direction: row;
+        gap: 2px;
+        margin-top: 3px;
+        display: flex !important;
+    }
+    
+    .btn {
+        flex: 1;
+        padding: 4px 2px;
+        font-size: 0.48rem;
+        white-space: nowrap;
+    }
+    
+    .modal-content {
+        padding: 10px 6px;
+        margin: 0 5px;
+    }
+    
+    .modal-content h2 {
+        font-size: 0.85rem;
+    }
+    
+    .modal-content p {
+        font-size: 0.6rem;
+    }
+}
+
+/* Smartphones pequeños - Aún más reducido (rangos típicos 320px-480px) */
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 0.85rem;
+        letter-spacing: 0.8px;
+    }
+    
+    .version {
+        font-size: 0.4rem;
+    }
+    
+    .device-info {
+        font-size: 0.48rem;
+    }
+    
+    .menu-container,
+    .game-container {
+        padding: 5px 4px;
+    }
+    
+    .game-mode label {
+        font-size: 0.48rem;
+    }
+    
+    .mode-selector {
+        font-size: 0.48rem;
+        padding: 3px 4px;
+    }
+    
+    .audio-btn {
+        width: 26px;
+        height: 26px;
+        font-size: 0.8rem;
+    }
+    
+    .instructions h3 {
+        font-size: 0.5rem;
+    }
+    
+    .instructions p {
+        font-size: 0.42rem;
+    }
+    
+    .btn-large {
+        padding: 5px 10px;
+        font-size: 0.55rem;
+    }
+    
+    .score {
+        font-size: 0.7rem;
+    }
+    
+    .label {
+        font-size: 0.38rem;
+    }
+    
+    .touch-slider {
+        width: 18px;
+        min-height: 130px;
+    }
+    
+    .slider-knob {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .btn {
+        padding: 3px 1px;
+        font-size: 0.45rem;
+    }
+}
+
+/* Optimización para SMARTPHONE en modo landscape (horizontal) */
+@media (orientation: landscape) and (max-width: 896px) {
+    body {
+        padding: 2px;
+        overflow-x: hidden;
+    }
+    
+    .container {
+        padding: 0;
+    }
+    
+    .game-container {
+        max-width: 100vw;
+        width: 100%;
+        padding: 5px;
+        box-sizing: border-box;
+    }
+    
+    .score-board {
+        margin-bottom: 8px;
+        margin-top: auto;
+    }
+    
+    .game-area {
+        max-width: 100%;
+        width: 100%;
+        gap: 5px;
+        box-sizing: border-box;
+        margin-top: 0;
+        margin-bottom: 5px;
+    }
+    
+    .touch-slider,
+    .touch-slider-left {
+        width: 30px;
+        flex-shrink: 0;
+    }
+    
+    .slider-knob {
+        width: 28px;
+        height: 28px;
+    }
+}
+
+/* Tablets en portrait (vertical) */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
+    body {
+        padding: 15px;
+    }
+    
+    .header h1 {
+        font-size: 3rem;
+        letter-spacing: 6px;
+    }
+    
+    .subtitle {
+        font-size: 1.1rem;
+    }
+    
+    .menu-container {
+        padding: 35px 30px;
+        max-width: 600px;
+    }
+    
+    .game-mode {
+        padding: 18px;
+    }
+    
+    .game-mode label {
+        font-size: 1.05rem;
+    }
+    
+    .mode-selector {
+        padding: 12px 18px;
+        font-size: 1rem;
+    }
+    
+    .audio-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 1.7rem;
+    }
+    
+    .instructions {
+        padding: 18px;
+    }
+    
+    .instructions h3 {
+        font-size: 1.1rem;
+    }
+    
+    .instructions p {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    
+    .btn-large {
+        padding: 18px 50px;
+        font-size: 1.25rem;
+    }
+}
+
+/* Optimización para modo horizontal (landscape) en móviles */
+@media (max-width: 896px) and (orientation: landscape) {
+    body {
+        padding: 5px;
+        min-height: 100vh;
+    }
+    
+    .header {
+        margin-bottom: 8px;
+    }
+    
+    .header h1 {
+        font-size: 1.8rem;
+        letter-spacing: 3px;
+    }
+    
+    .subtitle {
+        font-size: 0.85rem;
+    }
+    
+    .menu-container {
+        padding: 12px 20px;
+        max-width: 90%;
+    }
+    
+    .game-mode {
+        padding: 10px;
+        margin-bottom: 12px;
+    }
+    
+    .game-mode label {
+        font-size: 0.85rem;
+        margin-bottom: 5px;
+    }
+    
+    .mode-selector {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+    }
+    
+    .audio-controls {
+        margin-bottom: 12px;
+    }
+    
+    .audio-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1.3rem;
+    }
+    
+    .instructions {
+        padding: 10px;
+    }
+    
+    .instructions h3 {
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+    }
+    
+    .instructions p {
+        font-size: 0.7rem;
+        margin: 4px 0;
+        line-height: 1.3;
+    }
+    
+    .start-button-container {
+        margin-top: 15px;
+    }
+    
+    .btn-large {
+        padding: 10px 30px;
+        font-size: 0.95rem;
+    }
+    
+    .game-container {
+        padding: 8px 5px;
+        max-width: 100%;
+    }
+    
+    .score-board {
+        padding: 5px 10px;
+        margin-bottom: 5px;
+    }
+    
+    .label {
+        font-size: 0.7rem;
+        margin-bottom: 2px;
+    }
+    
+    .score {
+        font-size: 1.2rem;
+    }
+    
+    .game-area {
+        margin-bottom: 5px;
+        max-width: 100%;
+        gap: 5px;
+        width: 100%;
+    }
+    
+    .controls {
+        flex-direction: row;
+        gap: 10px;
+        margin-bottom: 8px;
+    }
+    
+    .btn {
+        padding: 8px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .audio-controls {
+        margin-bottom: 10px;
+    }
+    
+    .audio-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+    
+    .instructions {
+        padding: 10px;
+    }
+    
+    .instructions h3 {
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+    
+    .instructions p {
+        font-size: 0.75rem;
+        margin: 5px 0;
+    }
+    
+    .touch-slider {
+        width: 28px;
+    }
+    
+    .slider-knob {
+        width: 26px;
+        height: 26px;
+    }
+}
+
+/* Pantallas pequeñas en horizontal (teléfonos pequeños) */
+@media (max-height: 450px) and (orientation: landscape) {
+    body {
+        padding: 3px;
+        overflow-x: hidden;
+    }
+    
+    .container {
+        padding: 0;
+    }
+    
+    .header {
+        margin-bottom: 5px;
+    }
+    
+    .header h1 {
+        font-size: 1.4rem;
+        letter-spacing: 2px;
+    }
+    
+    .subtitle {
+        font-size: 0.75rem;
+    }
+    
+    .menu-container {
+        padding: 10px 15px;
+        max-width: 95%;
+    }
+    
+    .game-mode {
+        padding: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .game-mode label {
+        font-size: 0.8rem;
+        margin-bottom: 4px;
+    }
+    
+    .mode-selector {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+    
+    .audio-controls {
+        margin-bottom: 8px;
+    }
+    
+    .audio-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
+    
+    .instructions {
+        padding: 8px;
+    }
+    
+    .instructions h3 {
+        font-size: 0.75rem;
+        margin-bottom: 5px;
+    }
+    
+    .instructions p {
+        font-size: 0.65rem;
+        margin: 3px 0;
+        line-height: 1.2;
+    }
+    
+    .start-button-container {
+        margin-top: 10px;
+    }
+    
+    .btn-large {
+        padding: 8px 20px;
+        font-size: 0.85rem;
+    }
+    
+    .game-container {
+        padding: 5px 3px;
+        max-width: 100vw;
+        box-sizing: border-box;
+    }
+    
+    .score-board {
+        padding: 4px 8px;
+        margin-bottom: 5px;
+    }
+    
+    .label {
+        font-size: 0.6rem;
+    }
+    
+    .score {
+        font-size: 1.1rem;
+    }
+    
+    .game-area {
+        gap: 3px;
+        margin-bottom: 5px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .touch-slider {
+        width: 25px;
+        flex-shrink: 0;
+    }
+    
+    .slider-knob {
+        width: 23px;
+        height: 23px;
+    }
+    
+    .controls {
+        gap: 5px;
+        margin-top: 5px;
+    }
+    
+    .btn {
+        padding: 6px 8px;
+        font-size: 0.75rem;
+    }
+    
+    /* En la pantalla de juego, mantener controles visibles pero más compactos */
+    #gameScreen .controls {
+        display: flex;
+    }
+}
+
+/* Overlay de rotación para móviles en modo vertical */
+.rotate-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.rotate-content {
+    text-align: center;
+    color: white;
+    padding: 40px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.rotate-icon {
+    font-size: 5rem;
+    margin-bottom: 20px;
+    animation: rotate-animation 2s linear infinite;
+}
+
+.rotate-content h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.rotate-content p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+@keyframes rotate-animation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+/* Optimización específica para móviles en portrait */
+@media (max-width: 768px) and (orientation: portrait) {
+    body {
+        padding: 2px;
+        align-items: flex-start;
+    }
+    
+    .container {
+        margin-top: 4px;
+        margin-bottom: 4px;
+    }
+    
+    .header {
+        margin-bottom: 3px;
+    }
+    
+    .header h1 {
+        font-size: 0.9rem;
+        letter-spacing: 1px;
+    }
+    
+    .version {
+        font-size: 0.45rem;
+    }
+    
+    .menu-container {
+        padding: 6px 5px;
+    }
+    
+    .game-container {
+        padding: 4px 2px;
+    }
+    
+    .score-board {
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 3px 4px;
+    }
+    
+    .label {
+        font-size: 0.4rem;
+    }
+    
+    .score {
+        font-size: 0.75rem;
+    }
+    
+    .game-area {
+        gap: 2px;
+        margin-bottom: 4px;
+    }
+    
+    /* En portrait las barras se muestran pero más pequeñas */
+    .touch-slider,
+    .touch-slider-left {
+        width: 20px;
+        min-height: 140px;
+    }
+    
+    .slider-knob {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .controls {
+        margin-top: 3px;
+    }
+}
+
+/* Mostrar overlay solo en dispositivos móviles en modo vertical */
+@media (orientation: portrait) and (hover: none) and (pointer: coarse) {
+    .rotate-overlay {
+        display: flex;
+    }
+}
+
+

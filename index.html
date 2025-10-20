@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="screen-orientation" content="landscape">
+    <meta name="x5-orientation" content="landscape">
+    <meta name="full-screen" content="yes">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#667eea">
+    <title>Pong - Juego Clásico</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- PANTALLA 1: Opciones iniciales -->
+        <div id="menuScreen" class="screen active">
+            <div class="header">
+                <h1>PONG <span class="version">v1.1</span></h1>
+                <p class="device-info">Entorno: <span id="deviceType">Detectando...</span></p>
+            </div>
+            
+            <div class="menu-container">
+                <div class="game-mode">
+                    <label for="gameMode">Modo de juego:</label>
+                    <select id="gameMode" class="mode-selector">
+                        <option value="1">1 Jugador (vs Computadora)</option>
+                        <option value="2">2 Jugadores</option>
+                    </select>
+                </div>
+                
+                <div class="audio-controls">
+                    <button id="musicToggle" class="audio-btn" title="Desactivar música">🎵</button>
+                    <button id="soundToggle" class="audio-btn" title="Desactivar efectos">🔊</button>
+                </div>
+                
+                <div class="instructions">
+                    <h3>Controles:</h3>
+                    <p>⌨️ <strong>Jugador 1 (derecha/verde):</strong> Teclas ↑ y ↓, o usa el ratón/dedo en la barra verde</p>
+                    <p>⌨️ <strong>Jugador 2 (izquierda/rojo):</strong> Teclas W y S, o usa el ratón/dedo en la barra roja</p>
+                    <p>🖱️ <strong>Desktop:</strong> También puedes arrastrar las barras de colores con el ratón</p>
+                    <p>📱 <strong>Móvil:</strong> Arrastra las barras de colores con el dedo</p>
+                    <p>🎵 <strong>Audio:</strong> Música de fondo y efectos de sonido activados</p>
+                    <p>🎯 <strong>Objetivo:</strong> ¡Llega a 5 puntos para ganar!</p>
+                </div>
+                
+                <div class="start-button-container">
+                    <button id="startButton" class="btn btn-large">Iniciar Juego</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- PANTALLA 2: Juego -->
+        <div id="gameScreen" class="screen">
+            <div class="game-container">
+                <div class="score-board">
+                    <div class="computer-score">
+                        <span class="label">Computadora</span>
+                        <span id="computerScore" class="score">0</span>
+                    </div>
+                    <div class="level-score">
+                        <span class="label">Nivel</span>
+                        <span id="levelNumber" class="score level-number">1</span>
+                    </div>
+                    <div class="player-score">
+                        <span class="label">Jugador</span>
+                        <span id="playerScore" class="score">0</span>
+                    </div>
+                </div>
+                
+                <div class="game-area">
+                    <!-- Barra de desplazamiento para móviles - Jugador 2 (izquierda) -->
+                    <div id="touchSliderLeft" class="touch-slider touch-slider-left">
+                        <div id="sliderKnobLeft" class="slider-knob"></div>
+                    </div>
+                    
+                    <canvas id="pongCanvas"></canvas>
+                    
+                    <!-- Barra de desplazamiento para móviles - Jugador 1 (derecha) -->
+                    <div id="touchSlider" class="touch-slider">
+                        <div id="sliderKnob" class="slider-knob"></div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button id="pauseButton" class="btn">Pausar</button>
+                    <button id="resetButton" class="btn btn-secondary">Reiniciar</button>
+                    <button id="menuButton" class="btn btn-tertiary">Menú</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="gameOverModal" class="modal">
+            <div class="modal-content">
+                <h2 id="gameOverText">¡Juego Terminado!</h2>
+                <p id="winnerText"></p>
+                <button id="playAgainButton" class="btn">Jugar de Nuevo</button>
+            </div>
+        </div>
+        
+        <!-- Overlay para pedir rotación en móviles -->
+        <div id="rotateOverlay" class="rotate-overlay">
+            <div class="rotate-content">
+                <div class="rotate-icon">📱 ↻</div>
+                <h2>Por favor, gira tu dispositivo</h2>
+                <p>Este juego se disfruta mejor en modo horizontal</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="game.js"></script>
+</body>
+</html>
+
