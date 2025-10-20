@@ -312,12 +312,12 @@ function getPaddleSize() {
         }
         
         if (isSmartphone) {
-            // Smartphones: palas MUY pequeñas para maximizar espacio de juego
+            // Smartphones: palas EXTREMADAMENTE pequeñas para maximizar espacio de juego
             if (screenHeight < 450 && !isPortraitMode) {
-                // Pantallas muy pequeñas en horizontal: aún más pequeñas
-                return { width: 4, height: 30 };
+                // Pantallas muy pequeñas en horizontal: ultra pequeñas
+                return { width: 3, height: 25 };
             }
-            return { width: 5, height: 35 };
+            return { width: 4, height: 30 };
         } else {
             // Tablets: palas medianas
             return { width: 8, height: 55 };
@@ -363,12 +363,12 @@ function getBallSize() {
         }
         
         if (isSmartphone) {
-            // Smartphones: pelota más pequeña
+            // Smartphones: pelota más pequeña y proporcional a las palas
             if (screenHeight < 450 && !isPortraitMode) {
-                // Pantallas muy pequeñas: pelota aún más pequeña
-                return 4;
+                // Pantallas muy pequeñas: pelota muy pequeña
+                return 3.5;
             }
-            return 4.5;
+            return 4;
         } else {
             // Tablets: pelota mediana
             return 6;
@@ -720,8 +720,19 @@ function moveBall() {
         ball.dx = -Math.abs(ball.dx);
         ball.dy = ball.speed * Math.sin(angle);
         
-        // Aumentar ligeramente la velocidad (menos en móviles)
-        const speedIncrease = isTouchDevice() ? 1.01 : 1.03;
+        // Aumentar ligeramente la velocidad (mucho menos en smartphones)
+        let speedIncrease;
+        if (isTouchDevice()) {
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            const isPortraitMode = screenHeight > screenWidth;
+            const isSmartphone = isPortraitMode ? screenWidth <= 768 : screenWidth <= 896;
+            
+            speedIncrease = isSmartphone ? 1.005 : 1.01; // Smartphones: casi sin incremento
+        } else {
+            speedIncrease = 1.03; // Desktop: incremento normal
+        }
+        
         ball.speed *= speedIncrease;
         ball.dx = -ball.speed * Math.cos(angle);
         
@@ -740,8 +751,19 @@ function moveBall() {
         ball.dx = Math.abs(ball.dx);
         ball.dy = ball.speed * Math.sin(angle);
         
-        // Aumentar ligeramente la velocidad (menos en móviles)
-        const speedIncrease = isTouchDevice() ? 1.01 : 1.03;
+        // Aumentar ligeramente la velocidad (mucho menos en smartphones)
+        let speedIncrease;
+        if (isTouchDevice()) {
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            const isPortraitMode = screenHeight > screenWidth;
+            const isSmartphone = isPortraitMode ? screenWidth <= 768 : screenWidth <= 896;
+            
+            speedIncrease = isSmartphone ? 1.005 : 1.01; // Smartphones: casi sin incremento
+        } else {
+            speedIncrease = 1.03; // Desktop: incremento normal
+        }
+        
         ball.speed *= speedIncrease;
         ball.dx = ball.speed * Math.cos(angle);
         
@@ -779,8 +801,32 @@ function moveBall() {
 function resetBall() {
     ball.x = canvas.width / 2;
     ball.y = canvas.height / 2;
-    // Velocidad más lenta en dispositivos móviles
-    ball.speed = isTouchDevice() ? 2.5 : 3.5;
+    
+    // Velocidad ajustada según el dispositivo
+    if (isTouchDevice()) {
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        const isPortraitMode = screenHeight > screenWidth;
+        
+        let isSmartphone;
+        if (isPortraitMode) {
+            isSmartphone = screenWidth <= 768;
+        } else {
+            isSmartphone = screenWidth <= 896;
+        }
+        
+        if (isSmartphone) {
+            // Smartphones: velocidad más lenta para mejor jugabilidad
+            ball.speed = 2.0;
+        } else {
+            // Tablets: velocidad intermedia
+            ball.speed = 2.5;
+        }
+    } else {
+        // Desktop: velocidad normal
+        ball.speed = 3.5;
+    }
+    
     ball.dx = (Math.random() > 0.5 ? 1 : -1) * ball.speed;
     ball.dy = (Math.random() - 0.5) * ball.speed;
     // La pelota se coloca en el centro con dirección, pero ball.paused controla si se mueve
