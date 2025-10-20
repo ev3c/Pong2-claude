@@ -20,96 +20,155 @@ function detectOrientation() {
 function adjustCanvasSize() {
     isPortrait = detectOrientation();
     
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    
+    // Determinar tipo de dispositivo
+    let isTablet, isSmartphone;
+    
+    if (isPortrait) {
+        // Portrait mode
+        isSmartphone = screenWidth <= 768;
+        isTablet = screenWidth > 768 && screenWidth <= 1024;
+    } else {
+        // Landscape mode
+        isSmartphone = screenWidth <= 896;
+        isTablet = screenWidth > 896 && screenWidth <= 1366;
+    }
+    
     if (isTouchDevice()) {
-        const screenWidth = window.innerWidth;
-        const screenHeight = window.innerHeight;
-        
-        // Determinar tipo de dispositivo usando los mismos rangos que detectAndShowDeviceType
-        let isTablet, isSmartphone;
-        
         if (isPortrait) {
-            // Portrait mode
-            isSmartphone = screenWidth <= 768;
-            isTablet = screenWidth > 768 && screenWidth <= 1024;
-        } else {
-            // Landscape mode
-            isSmartphone = screenWidth <= 896;
-            isTablet = screenWidth > 896 && screenWidth <= 1366;
-        }
-        
-        if (isPortrait) {
-            // MODO VERTICAL
+            // MODO VERTICAL - Calcular dinámicamente el ancho disponible
+            // Leer el ancho real de los sliders si existen
+            let leftSliderWidth = 8;
+            let rightSliderWidth = 8;
+            let gapTotal = 2;
+            
+            if (touchSliderLeft && window.getComputedStyle) {
+                leftSliderWidth = parseFloat(window.getComputedStyle(touchSliderLeft).width) || 8;
+            }
+            if (touchSlider && window.getComputedStyle) {
+                rightSliderWidth = parseFloat(window.getComputedStyle(touchSlider).width) || 8;
+            }
+            
+            // Obtener el gap del CSS
+            const gameArea = document.querySelector('.game-area');
+            if (gameArea && window.getComputedStyle) {
+                const gap = parseFloat(window.getComputedStyle(gameArea).gap) || 1;
+                gapTotal = gap * 2;
+            }
+            
+            // Calcular ancho del canvas dejando espacio para sliders
+            const slidersTotalWidth = leftSliderWidth + rightSliderWidth + gapTotal;
+            const containerPadding = isTablet ? 60 : 10; // Padding del game-container
+            const availableWidth = screenWidth - slidersTotalWidth - containerPadding;
+            
+            canvasBaseWidth = Math.floor(Math.max(200, availableWidth * 0.95));
+            
             if (isTablet) {
-                // TABLET: Canvas un poco más pequeño
-                canvasBaseWidth = Math.floor(screenWidth * 0.88);
-                const reservedHeight = 280; // Más espacio para controles en tablet
+                const reservedHeight = 280;
                 canvasBaseHeight = Math.max(350, Math.floor(screenHeight - reservedHeight));
-                console.log('📱 TABLET Vertical:', canvasBaseWidth, 'x', canvasBaseHeight);
             } else if (isSmartphone) {
-                // SMARTPHONE: Canvas muy pequeño
-                canvasBaseWidth = Math.floor(screenWidth * 0.92);
-                const reservedHeight = 250; // Espacio para header, score, controls
+                const reservedHeight = 250;
                 canvasBaseHeight = Math.max(200, Math.floor(screenHeight - reservedHeight));
-                console.log('📱 SMARTPHONE Vertical:', canvasBaseWidth, 'x', canvasBaseHeight);
             }
+            
+            const paddleInfo = getPaddleSize();
+            const ballRadius = getBallSize();
+            console.log('📱 Portrait:', {
+                screen: `${screenWidth}x${screenHeight}`,
+                sliders: `L:${leftSliderWidth}px R:${rightSliderWidth}px`,
+                canvas: `${canvasBaseWidth}x${canvasBaseHeight}`,
+                paddle: `${paddleInfo.width}x${paddleInfo.height}px`,
+                ball: `r=${ballRadius}px`
+            });
         } else {
-            // MODO HORIZONTAL
-            let sliderWidth = 8; // Sliders muy pequeños en smartphones
-            let gapWidth = 1; // Gap muy pequeño
-            let bodyPadding = 4;
-            let containerPadding = 10;
-            let reservedHeightLandscape = 120;
+            // MODO HORIZONTAL - Calcular dinámicamente
+            let leftSliderWidth = 8;
+            let rightSliderWidth = 8;
+            let gapTotal = 2;
             
-            if (isTablet) {
-                // TABLET Horizontal: Canvas un poco más pequeño
-                sliderWidth = 38;
-                gapWidth = 10;
-                bodyPadding = 24; // 12px * 2
-                containerPadding = 40; // 20px * 2
-                reservedHeightLandscape = 140;
-                console.log('📱 TABLET Horizontal detectado');
-            } else if (isSmartphone) {
-                // SMARTPHONE Horizontal: Canvas muy pequeño
-                if (screenHeight < 450) {
-                    sliderWidth = 6;  // Aún más pequeño en pantallas muy pequeñas
-                    gapWidth = 1;
-                    bodyPadding = 2;
-                    containerPadding = 6;
-                }
-                reservedHeightLandscape = 120;
-                console.log('📱 SMARTPHONE Horizontal detectado');
+            // Leer anchos reales de los sliders
+            if (touchSliderLeft && window.getComputedStyle) {
+                leftSliderWidth = parseFloat(window.getComputedStyle(touchSliderLeft).width) || 8;
+            }
+            if (touchSlider && window.getComputedStyle) {
+                rightSliderWidth = parseFloat(window.getComputedStyle(touchSlider).width) || 8;
             }
             
-            // Calcular espacio total ocupado por sliders (siempre ambos sliders visibles)
-            const marginSafety = 10;
-            const sliderSpace = sliderWidth * 2 + gapWidth * 2 + bodyPadding + containerPadding + marginSafety;
-            
-            canvasBaseWidth = Math.floor(screenWidth - sliderSpace);
-            
-            if (isTablet) {
-                // Tablet: altura más controlada
-                canvasBaseHeight = Math.max(300, Math.floor(screenHeight - reservedHeightLandscape));
-            } else {
-                // Smartphone: altura mínima
-                canvasBaseHeight = Math.max(180, Math.floor(screenHeight - reservedHeightLandscape));
+            // Obtener el gap del CSS
+            const gameArea = document.querySelector('.game-area');
+            if (gameArea && window.getComputedStyle) {
+                const gap = parseFloat(window.getComputedStyle(gameArea).gap) || 1;
+                gapTotal = gap * 2;
             }
             
-            console.log('📱 Canvas:', canvasBaseWidth, 'x', canvasBaseHeight);
+            // Calcular espacio ocupado
+            const bodyPadding = isTablet ? 24 : (screenHeight < 450 ? 6 : 10);
+            const containerPadding = isTablet ? 40 : (screenHeight < 450 ? 10 : 20);
+            const marginSafety = isSmartphone ? 5 : 15;
+            
+            const sliderSpace = leftSliderWidth + rightSliderWidth + gapTotal + 
+                              bodyPadding + containerPadding + marginSafety;
+            
+            canvasBaseWidth = Math.floor(Math.max(300, screenWidth - sliderSpace));
+            
+            // Calcular altura
+            const reservedHeightLandscape = isTablet ? 140 : (screenHeight < 450 ? 100 : 120);
+            canvasBaseHeight = Math.floor(Math.max(180, screenHeight - reservedHeightLandscape));
+            
+            const paddleInfo = getPaddleSize();
+            const ballRadius = getBallSize();
+            console.log('📱 Landscape:', {
+                screen: `${screenWidth}x${screenHeight}`,
+                sliders: `L:${leftSliderWidth}px R:${rightSliderWidth}px`,
+                sliderSpace: `${sliderSpace}px`,
+                canvas: `${canvasBaseWidth}x${canvasBaseHeight}`,
+                paddle: `${paddleInfo.width}x${paddleInfo.height}px`,
+                ball: `r=${ballRadius}px`
+            });
         }
     } else {
-        // LAPTOP/DESKTOP: ajustar para que las barras sean visibles
-        const sliderWidth = 40; // Ancho de cada slider
-        const gapWidth = 15; // Espacio entre slider y canvas
-        const bodyPadding = 40; // padding del body
-        const containerPadding = 60; // padding del container
-        const marginSafety = 20;
-        const sliderSpace = sliderWidth * 2 + gapWidth * 2 + bodyPadding + containerPadding + marginSafety;
+        // LAPTOP/DESKTOP: Calcular dinámicamente
+        let leftSliderWidth = 40;
+        let rightSliderWidth = 40;
+        let gapTotal = 30;
         
-        // Calcular ancho disponible
+        // Leer anchos reales de los sliders
+        if (touchSliderLeft && window.getComputedStyle) {
+            leftSliderWidth = parseFloat(window.getComputedStyle(touchSliderLeft).width) || 40;
+        }
+        if (touchSlider && window.getComputedStyle) {
+            rightSliderWidth = parseFloat(window.getComputedStyle(touchSlider).width) || 40;
+        }
+        
+        // Obtener el gap del CSS
+        const gameArea = document.querySelector('.game-area');
+        if (gameArea && window.getComputedStyle) {
+            const gap = parseFloat(window.getComputedStyle(gameArea).gap) || 15;
+            gapTotal = gap * 2;
+        }
+        
+        const bodyPadding = 40;
+        const containerPadding = 60;
+        const marginSafety = 20;
+        const sliderSpace = leftSliderWidth + rightSliderWidth + gapTotal + 
+                          bodyPadding + containerPadding + marginSafety;
+        
         const availableWidth = Math.min(window.innerWidth, 1200) - sliderSpace;
         canvasBaseWidth = Math.min(700, Math.max(500, availableWidth));
         canvasBaseHeight = 500;
-        console.log('💻 DESKTOP:', canvasBaseWidth, 'x', canvasBaseHeight, '| Espacio sliders:', sliderSpace);
+        
+        const paddleInfo = getPaddleSize();
+        const ballRadius = getBallSize();
+        console.log('💻 DESKTOP:', {
+            screen: `${screenWidth}x${screenHeight}`,
+            sliders: `L:${leftSliderWidth}px R:${rightSliderWidth}px`,
+            sliderSpace: `${sliderSpace}px`,
+            canvas: `${canvasBaseWidth}x${canvasBaseHeight}`,
+            paddle: `${paddleInfo.width}x${paddleInfo.height}px`,
+            ball: `r=${ballRadius}px`
+        });
     }
     
     // Aplicar nuevo tamaño
@@ -253,8 +312,12 @@ function getPaddleSize() {
         }
         
         if (isSmartphone) {
-            // Smartphones: palas muy pequeñas
-            return { width: 6, height: 40 };
+            // Smartphones: palas MUY pequeñas para maximizar espacio de juego
+            if (screenHeight < 450 && !isPortraitMode) {
+                // Pantallas muy pequeñas en horizontal: aún más pequeñas
+                return { width: 4, height: 30 };
+            }
+            return { width: 5, height: 35 };
         } else {
             // Tablets: palas medianas
             return { width: 8, height: 55 };
@@ -301,7 +364,11 @@ function getBallSize() {
         
         if (isSmartphone) {
             // Smartphones: pelota más pequeña
-            return 5;
+            if (screenHeight < 450 && !isPortraitMode) {
+                // Pantallas muy pequeñas: pelota aún más pequeña
+                return 4;
+            }
+            return 4.5;
         } else {
             // Tablets: pelota mediana
             return 6;
