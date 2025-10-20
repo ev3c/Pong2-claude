@@ -692,19 +692,23 @@ body {
     }
     
     .game-area {
-        gap: 2px;
+        gap: 1px;
         max-width: 100%;
         margin-bottom: 4px;
     }
     
-    .touch-slider {
-        width: 20px;
+    .touch-slider,
+    .touch-slider-left {
+        width: 8px;
         min-height: 140px;
+        border-radius: 4px;
+        border-width: 1px;
     }
     
     .slider-knob {
-        width: 18px;
-        height: 18px;
+        width: 7px;
+        height: 7px;
+        border-width: 1px;
     }
     
     .controls {
@@ -791,14 +795,18 @@ body {
         font-size: 0.38rem;
     }
     
-    .touch-slider {
-        width: 18px;
+    .touch-slider,
+    .touch-slider-left {
+        width: 6px;
         min-height: 130px;
+        border-radius: 3px;
+        border-width: 1px;
     }
     
     .slider-knob {
-        width: 16px;
-        height: 16px;
+        width: 5px;
+        height: 5px;
+        border-width: 1px;
     }
     
     .btn {
@@ -841,13 +849,16 @@ body {
     
     .touch-slider,
     .touch-slider-left {
-        width: 30px;
+        width: 8px;
         flex-shrink: 0;
+        border-radius: 4px;
+        border-width: 1px;
     }
     
     .slider-knob {
-        width: 28px;
-        height: 28px;
+        width: 7px;
+        height: 7px;
+        border-width: 1px;
     }
 }
 
@@ -1044,13 +1055,17 @@ body {
         margin: 5px 0;
     }
     
-    .touch-slider {
-        width: 28px;
+    .touch-slider,
+    .touch-slider-left {
+        width: 8px;
+        border-radius: 4px;
+        border-width: 1px;
     }
     
     .slider-knob {
-        width: 26px;
-        height: 26px;
+        width: 7px;
+        height: 7px;
+        border-width: 1px;
     }
 }
 
@@ -1158,14 +1173,18 @@ body {
         box-sizing: border-box;
     }
     
-    .touch-slider {
-        width: 25px;
+    .touch-slider,
+    .touch-slider-left {
+        width: 6px;
         flex-shrink: 0;
+        border-radius: 3px;
+        border-width: 1px;
     }
     
     .slider-knob {
-        width: 23px;
-        height: 23px;
+        width: 5px;
+        height: 5px;
+        border-width: 1px;
     }
     
     .controls {
@@ -1295,13 +1314,16 @@ body {
     /* En portrait las barras se muestran pero más pequeñas */
     .touch-slider,
     .touch-slider-left {
-        width: 20px;
+        width: 8px;
         min-height: 140px;
+        border-radius: 4px;
+        border-width: 1px;
     }
     
     .slider-knob {
-        width: 18px;
-        height: 18px;
+        width: 7px;
+        height: 7px;
+        border-width: 1px;
     }
     
     .controls {

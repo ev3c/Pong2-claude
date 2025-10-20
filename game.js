@@ -54,8 +54,8 @@ function adjustCanvasSize() {
             }
         } else {
             // MODO HORIZONTAL
-            let sliderWidth = 30;
-            let gapWidth = 5;
+            let sliderWidth = 8; // Sliders muy pequeños en smartphones
+            let gapWidth = 1; // Gap muy pequeño
             let bodyPadding = 4;
             let containerPadding = 10;
             let reservedHeightLandscape = 120;
@@ -71,8 +71,8 @@ function adjustCanvasSize() {
             } else if (isSmartphone) {
                 // SMARTPHONE Horizontal: Canvas muy pequeño
                 if (screenHeight < 450) {
-                    sliderWidth = 25;
-                    gapWidth = 3;
+                    sliderWidth = 6;  // Aún más pequeño en pantallas muy pequeñas
+                    gapWidth = 1;
                     bodyPadding = 2;
                     containerPadding = 6;
                 }
