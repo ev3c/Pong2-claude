@@ -347,8 +347,8 @@ function getBallSpeed() {
         // Modo Portrait (Vertical)
         if (screenWidth <= 768) {
             deviceType = 'smartphone';
-            baseSpeed = 2.0; // Smartphones: velocidad más lenta
-            levelIncrement = 0.05; // 5% por nivel - progresión más lenta
+            baseSpeed = 1.2; // Smartphones: velocidad muy lenta
+            levelIncrement = 0.03; // 3% por nivel - progresión muy lenta
         } else if (screenWidth > 768 && screenWidth <= 1024) {
             deviceType = 'tablet';
             baseSpeed = 4.0; // Tablets: velocidad alta
@@ -362,8 +362,8 @@ function getBallSpeed() {
         // Modo Landscape (Horizontal)
         if (screenWidth <= 896) {
             deviceType = 'smartphone';
-            baseSpeed = 2.0; // Smartphones: velocidad más lenta
-            levelIncrement = 0.05; // 5% por nivel - progresión más lenta
+            baseSpeed = 1.2; // Smartphones: velocidad muy lenta
+            levelIncrement = 0.03; // 3% por nivel - progresión muy lenta
         } else if (screenWidth > 896 && screenWidth <= 1366) {
             deviceType = 'tablet';
             baseSpeed = 4.0; // Tablets: velocidad alta
@@ -376,7 +376,7 @@ function getBallSpeed() {
     }
     
     // Aumentar velocidad según el nivel con incremento diferenciado por dispositivo
-    // Smartphone: Nivel 10 = base * 1.45 (+45%) → 2.0 * 1.45 = 2.9
+    // Smartphone: Nivel 10 = base * 1.27 (+27%) → 1.2 * 1.27 = 1.52
     // Tablet: Nivel 10 = base * 1.90 (+90%) → 4.0 * 1.90 = 7.6
     // Desktop: Nivel 10 = base * 2.35 (+135%) → 5.0 * 2.35 = 11.75
     const levelMultiplier = 1 + (currentLevel - 1) * levelIncrement;
