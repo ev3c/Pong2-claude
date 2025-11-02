@@ -351,12 +351,12 @@ function getBallSpeed() {
             levelIncrement = 0.05; // 5% por nivel - progresión más lenta
         } else if (screenWidth > 768 && screenWidth <= 1024) {
             deviceType = 'tablet';
-            baseSpeed = 2.5; // Tablets: velocidad intermedia
-            levelIncrement = 0.08; // 8% por nivel - progresión intermedia
+            baseSpeed = 4.0; // Tablets: velocidad alta
+            levelIncrement = 0.10; // 10% por nivel - progresión rápida
         } else {
             deviceType = 'desktop';
-            baseSpeed = 3.5; // Desktop: velocidad rápida
-            levelIncrement = 0.12; // 12% por nivel - progresión rápida
+            baseSpeed = 5.0; // Desktop: velocidad muy alta
+            levelIncrement = 0.15; // 15% por nivel - progresión muy rápida
         }
     } else {
         // Modo Landscape (Horizontal)
@@ -366,19 +366,19 @@ function getBallSpeed() {
             levelIncrement = 0.05; // 5% por nivel - progresión más lenta
         } else if (screenWidth > 896 && screenWidth <= 1366) {
             deviceType = 'tablet';
-            baseSpeed = 2.5; // Tablets: velocidad intermedia
-            levelIncrement = 0.08; // 8% por nivel - progresión intermedia
+            baseSpeed = 4.0; // Tablets: velocidad alta
+            levelIncrement = 0.10; // 10% por nivel - progresión rápida
         } else {
             deviceType = 'desktop';
-            baseSpeed = 3.5; // Desktop: velocidad rápida
-            levelIncrement = 0.12; // 12% por nivel - progresión rápida
+            baseSpeed = 5.0; // Desktop: velocidad muy alta
+            levelIncrement = 0.15; // 15% por nivel - progresión muy rápida
         }
     }
     
     // Aumentar velocidad según el nivel con incremento diferenciado por dispositivo
-    // Smartphone: Nivel 10 = base * 1.45 (+45%)
-    // Tablet: Nivel 10 = base * 1.72 (+72%)
-    // Desktop: Nivel 10 = base * 2.08 (+108%)
+    // Smartphone: Nivel 10 = base * 1.45 (+45%) → 2.0 * 1.45 = 2.9
+    // Tablet: Nivel 10 = base * 1.90 (+90%) → 4.0 * 1.90 = 7.6
+    // Desktop: Nivel 10 = base * 2.35 (+135%) → 5.0 * 2.35 = 11.75
     const levelMultiplier = 1 + (currentLevel - 1) * levelIncrement;
     
     const finalSpeed = baseSpeed * levelMultiplier;
