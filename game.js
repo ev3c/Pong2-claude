@@ -72,11 +72,11 @@ function adjustCanvasSize() {
             canvasBaseWidth = Math.floor(Math.max(200, availableWidth * sizeMultiplier));
             
             if (isTablet) {
-                const reservedHeight = 280;
-                canvasBaseHeight = Math.max(350, Math.floor(screenHeight - reservedHeight));
+                const reservedHeight = 350;
+                canvasBaseHeight = Math.max(280, Math.floor(screenHeight - reservedHeight));
             } else if (isSmartphone) {
-                const reservedHeight = 250;
-                canvasBaseHeight = Math.max(200, Math.floor((screenHeight - reservedHeight) * sizeMultiplier));
+                const reservedHeight = 320;
+                canvasBaseHeight = Math.max(180, Math.floor((screenHeight - reservedHeight) * sizeMultiplier));
             }
             
             const paddleInfo = getPaddleSize();
@@ -123,8 +123,8 @@ function adjustCanvasSize() {
             canvasBaseWidth = Math.floor(Math.max(300, (screenWidth - sliderSpace) * sizeMultiplier));
             
             // Calcular altura
-            const reservedHeightLandscape = isTablet ? 140 : (screenHeight < 450 ? 100 : 120);
-            canvasBaseHeight = Math.floor(Math.max(180, (screenHeight - reservedHeightLandscape) * sizeMultiplier));
+            const reservedHeightLandscape = isTablet ? 180 : (screenHeight < 450 ? 140 : 160);
+            canvasBaseHeight = Math.floor(Math.max(150, (screenHeight - reservedHeightLandscape) * sizeMultiplier));
             
             const paddleInfo = getPaddleSize();
             const ballRadius = getBallSize();
@@ -208,12 +208,15 @@ const sliderKnobLeft = document.getElementById('sliderKnobLeft');
 const levelNumber = document.getElementById('levelNumber');
 const gameModeSelect = document.getElementById('gameMode');
 const computerScoreLabel = document.querySelector('.computer-score .label');
+const levelSelect = document.getElementById('levelSelect');
+const levelSelectorDiv = document.getElementById('levelSelector');
 
 // Variables del juego
 let gameRunning = false;
 let animationId;
 let mouseY = canvas.height / 2;
 let gameMode = 1; // 1 = vs Computadora, 2 = 2 Jugadores
+let initialLevel = 1; // Nivel inicial seleccionado por el usuario
 
 // Sistema de Audio
 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -327,6 +330,29 @@ function getBallSize() {
         // TABLET (por defecto): pelota mediana
         return 6;
     }
+}
+
+// Función para obtener velocidad de la pelota según el nivel y dispositivo
+function getBallSpeed() {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    const isPortraitMode = screenHeight > screenWidth;
+    const isSmartphone = isPortraitMode ? screenWidth <= 768 : screenWidth <= 896;
+    
+    // Velocidad base según dispositivo
+    let baseSpeed;
+    if (isSmartphone) {
+        baseSpeed = 2.0; // Smartphones: velocidad más lenta
+    } else {
+        baseSpeed = 2.5; // Tablet/Desktop: velocidad intermedia
+    }
+    
+    // Aumentar velocidad según el nivel (10% por nivel)
+    // Nivel 1: velocidad base
+    // Nivel 10: velocidad base * 1.9
+    const levelMultiplier = 1 + (currentLevel - 1) * 0.1;
+    
+    return baseSpeed * levelMultiplier;
 }
 
 // Pelota
@@ -675,19 +701,9 @@ function moveBall() {
         const hitPos = (ball.y - player.y) / player.height;
         const angle = (hitPos - 0.5) * Math.PI / 3; // Máximo 60 grados
         
-        ball.dx = -Math.abs(ball.dx);
-        ball.dy = ball.speed * Math.sin(angle);
-        
-        // Aumentar ligeramente la velocidad según el dispositivo
-        const screenWidth = window.innerWidth;
-        const screenHeight = window.innerHeight;
-        const isPortraitMode = screenHeight > screenWidth;
-        const isSmartphone = isPortraitMode ? screenWidth <= 768 : screenWidth <= 896;
-        
-        const speedIncrease = isSmartphone ? 1.005 : 1.01; // Smartphones: casi sin incremento, Tablet: incremento pequeño
-        
-        ball.speed *= speedIncrease;
+        // Mantener la velocidad constante del nivel
         ball.dx = -ball.speed * Math.cos(angle);
+        ball.dy = ball.speed * Math.sin(angle);
         
         playPaddleHit();
     }
@@ -701,19 +717,9 @@ function moveBall() {
         const hitPos = (ball.y - computer.y) / computer.height;
         const angle = (hitPos - 0.5) * Math.PI / 3;
         
-        ball.dx = Math.abs(ball.dx);
-        ball.dy = ball.speed * Math.sin(angle);
-        
-        // Aumentar ligeramente la velocidad según el dispositivo
-        const screenWidth = window.innerWidth;
-        const screenHeight = window.innerHeight;
-        const isPortraitMode = screenHeight > screenWidth;
-        const isSmartphone = isPortraitMode ? screenWidth <= 768 : screenWidth <= 896;
-        
-        const speedIncrease = isSmartphone ? 1.005 : 1.01; // Smartphones: casi sin incremento, Tablet: incremento pequeño
-        
-        ball.speed *= speedIncrease;
+        // Mantener la velocidad constante del nivel
         ball.dx = ball.speed * Math.cos(angle);
+        ball.dy = ball.speed * Math.sin(angle);
         
         playPaddleHit();
     }
@@ -750,19 +756,8 @@ function resetBall() {
     ball.x = canvas.width / 2;
     ball.y = canvas.height / 2;
     
-    // Velocidad ajustada según el dispositivo
-    const screenWidth = window.innerWidth;
-    const screenHeight = window.innerHeight;
-    const isPortraitMode = screenHeight > screenWidth;
-    const isSmartphone = isPortraitMode ? screenWidth <= 768 : screenWidth <= 896;
-    
-    if (isSmartphone) {
-        // Smartphones: velocidad más lenta para mejor jugabilidad
-        ball.speed = 2.0;
-    } else {
-        // Tablet (por defecto): velocidad intermedia
-        ball.speed = 2.5;
-    }
+    // Mantener la velocidad del nivel actual
+    ball.speed = getBallSpeed();
     
     ball.dx = (Math.random() > 0.5 ? 1 : -1) * ball.speed;
     ball.dy = (Math.random() - 0.5) * ball.speed;
@@ -787,11 +782,21 @@ function checkWinner() {
             // Modo 1 jugador - avanzar de nivel
             currentLevel++;
             levelNumber.textContent = currentLevel;
-            const newSpeed = Math.min(computerBaseSpeed + (currentLevel - 1) * 0.5, 7);
+            const newSpeed = Math.min(computerBaseSpeed + (currentLevel - 1) * 0.6, 8.5);
             computer.speed = newSpeed;
             
+            // Actualizar errores de la computadora para el nuevo nivel
+            computerErrorChance = Math.max(0.05, 0.3 - (currentLevel - 1) * 0.05);
+            
+            // Actualizar velocidad de la pelota para el nuevo nivel
+            ball.speed = getBallSpeed();
+            
             let message = `🎉 ¡Pasas al Nivel ${currentLevel}! `;
-            message += 'La computadora será más rápida y cometerá menos errores 🚀';
+            if (currentLevel > 10) {
+                message += '¡Has superado todos los niveles! Eres un maestro del Pong 🏆';
+            } else {
+                message += 'La computadora será más rápida y cometerá menos errores 🚀';
+            }
             
             endGame(
                 `¡Nivel ${currentLevel - 1} Completado!`, 
@@ -861,6 +866,19 @@ function startGame() {
     if (audioContext.state === 'suspended') {
         audioContext.resume();
     }
+    
+    // Configurar el nivel inicial seleccionado
+    currentLevel = initialLevel;
+    levelNumber.textContent = currentLevel;
+    // Calcular velocidad de la computadora según el nivel (hasta 8.5 en nivel 10)
+    const newSpeed = Math.min(computerBaseSpeed + (currentLevel - 1) * 0.6, 8.5);
+    computer.speed = newSpeed;
+    
+    // Configurar errores de la computadora según el nivel
+    computerErrorChance = Math.max(0.05, 0.3 - (currentLevel - 1) * 0.05);
+    
+    // Establecer velocidad de la pelota según el nivel
+    ball.speed = getBallSpeed();
     
     // Cambiar a la pantalla de juego
     showGameScreen();
@@ -941,7 +959,7 @@ function goToMenu() {
     showMenuScreen();
 }
 
-// Reiniciar juego (reinicia todo, incluyendo nivel)
+// Reiniciar juego (reinicia todo, volviendo al nivel inicial seleccionado)
 function resetGame() {
     gameRunning = false;
     cancelAnimationFrame(animationId);
@@ -949,12 +967,17 @@ function resetGame() {
     
     playerScore = 0;
     computerScore = 0;
-    currentLevel = 1;
+    currentLevel = initialLevel; // Volver al nivel inicial seleccionado
     levelNumber.textContent = currentLevel;
-    computer.speed = computerBaseSpeed;
+    // Calcular velocidad según el nivel inicial (hasta 8.5 en nivel 10)
+    const newSpeed = Math.min(computerBaseSpeed + (currentLevel - 1) * 0.6, 8.5);
+    computer.speed = newSpeed;
     
-    // Reiniciar errores de la computadora
-    computerErrorChance = 0.3; // Volver a 30% de error inicial
+    // Reiniciar errores de la computadora según el nivel
+    computerErrorChance = Math.max(0.05, 0.3 - (currentLevel - 1) * 0.05);
+    
+    // Establecer velocidad de la pelota según el nivel inicial
+    ball.speed = getBallSpeed();
     
     updateScore();
     
@@ -1391,6 +1414,12 @@ gameModeSelect.addEventListener('change', (e) => {
     }
 });
 
+// Listener para cambio de nivel inicial
+levelSelect.addEventListener('change', (e) => {
+    initialLevel = parseInt(e.target.value);
+    console.log(`🎯 Nivel inicial seleccionado: ${initialLevel}`);
+});
+
 // Función para actualizar la interfaz según el modo de juego
 function updateGameMode() {
     // Mostrar ambas barras siempre, independientemente del modo
@@ -1410,12 +1439,22 @@ function updateGameMode() {
         
         // Ocultar indicador de nivel (no aplica en modo 2 jugadores)
         levelNumber.parentElement.style.opacity = '0.3';
+        
+        // Ocultar selector de nivel en el menú
+        if (levelSelectorDiv) {
+            levelSelectorDiv.style.display = 'none';
+        }
     } else {
         // Modo 1 jugador (vs Computadora)
         computerScoreLabel.textContent = 'Computadora';
         
         // Mostrar indicador de nivel
         levelNumber.parentElement.style.opacity = '1';
+        
+        // Mostrar selector de nivel en el menú
+        if (levelSelectorDiv) {
+            levelSelectorDiv.style.display = 'block';
+        }
     }
     
     // Reajustar tamaño del canvas si está en la pantalla de juego
