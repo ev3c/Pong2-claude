@@ -341,41 +341,49 @@ function getBallSpeed() {
     // Determinar tipo de dispositivo
     let deviceType = 'desktop'; // Por defecto
     let baseSpeed;
+    let levelIncrement; // Incremento por nivel según dispositivo
     
     if (isPortraitMode) {
         // Modo Portrait (Vertical)
         if (screenWidth <= 768) {
             deviceType = 'smartphone';
             baseSpeed = 2.0; // Smartphones: velocidad más lenta
+            levelIncrement = 0.05; // 5% por nivel - progresión más lenta
         } else if (screenWidth > 768 && screenWidth <= 1024) {
             deviceType = 'tablet';
             baseSpeed = 2.5; // Tablets: velocidad intermedia
+            levelIncrement = 0.08; // 8% por nivel - progresión intermedia
         } else {
             deviceType = 'desktop';
             baseSpeed = 3.5; // Desktop: velocidad rápida
+            levelIncrement = 0.12; // 12% por nivel - progresión rápida
         }
     } else {
         // Modo Landscape (Horizontal)
         if (screenWidth <= 896) {
             deviceType = 'smartphone';
             baseSpeed = 2.0; // Smartphones: velocidad más lenta
+            levelIncrement = 0.05; // 5% por nivel - progresión más lenta
         } else if (screenWidth > 896 && screenWidth <= 1366) {
             deviceType = 'tablet';
             baseSpeed = 2.5; // Tablets: velocidad intermedia
+            levelIncrement = 0.08; // 8% por nivel - progresión intermedia
         } else {
             deviceType = 'desktop';
             baseSpeed = 3.5; // Desktop: velocidad rápida
+            levelIncrement = 0.12; // 12% por nivel - progresión rápida
         }
     }
     
-    // Aumentar velocidad según el nivel (10% por nivel)
-    // Nivel 1: velocidad base
-    // Nivel 10: velocidad base * 1.9
-    const levelMultiplier = 1 + (currentLevel - 1) * 0.1;
+    // Aumentar velocidad según el nivel con incremento diferenciado por dispositivo
+    // Smartphone: Nivel 10 = base * 1.45 (+45%)
+    // Tablet: Nivel 10 = base * 1.72 (+72%)
+    // Desktop: Nivel 10 = base * 2.08 (+108%)
+    const levelMultiplier = 1 + (currentLevel - 1) * levelIncrement;
     
     const finalSpeed = baseSpeed * levelMultiplier;
     
-    console.log(`⚡ Velocidad pelota: ${finalSpeed.toFixed(2)} (Dispositivo: ${deviceType}, Nivel: ${currentLevel})`);
+    console.log(`⚡ Velocidad pelota: ${finalSpeed.toFixed(2)} (Dispositivo: ${deviceType}, Base: ${baseSpeed}, Nivel: ${currentLevel}, Mult: ${levelMultiplier.toFixed(2)})`);
     
     return finalSpeed;
 }
