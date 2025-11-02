@@ -63,14 +63,16 @@ function adjustCanvasSize() {
             const containerPadding = isTablet ? 60 : 10; // Padding del game-container
             const availableWidth = screenWidth - slidersTotalWidth - containerPadding;
             
-            canvasBaseWidth = Math.floor(Math.max(200, availableWidth * 0.95));
+            // Aplicar reducción del 20% para smartphones (dejar al 80%)
+            const sizeMultiplier = isSmartphone ? 0.8 : 1.0;
+            canvasBaseWidth = Math.floor(Math.max(200, availableWidth * 0.95 * sizeMultiplier));
             
             if (isTablet) {
                 const reservedHeight = 280;
                 canvasBaseHeight = Math.max(350, Math.floor(screenHeight - reservedHeight));
             } else if (isSmartphone) {
                 const reservedHeight = 250;
-                canvasBaseHeight = Math.max(200, Math.floor(screenHeight - reservedHeight));
+                canvasBaseHeight = Math.max(200, Math.floor((screenHeight - reservedHeight) * sizeMultiplier));
             }
             
             const paddleInfo = getPaddleSize();
@@ -111,11 +113,13 @@ function adjustCanvasSize() {
             const sliderSpace = leftSliderWidth + rightSliderWidth + gapTotal + 
                               bodyPadding + containerPadding + marginSafety;
             
-            canvasBaseWidth = Math.floor(Math.max(300, screenWidth - sliderSpace));
+            // Aplicar reducción del 20% para smartphones (dejar al 80%)
+            const sizeMultiplier = isSmartphone ? 0.8 : 1.0;
+            canvasBaseWidth = Math.floor(Math.max(300, (screenWidth - sliderSpace) * sizeMultiplier));
             
             // Calcular altura
             const reservedHeightLandscape = isTablet ? 140 : (screenHeight < 450 ? 100 : 120);
-            canvasBaseHeight = Math.floor(Math.max(180, screenHeight - reservedHeightLandscape));
+            canvasBaseHeight = Math.floor(Math.max(180, (screenHeight - reservedHeightLandscape) * sizeMultiplier));
             
             const paddleInfo = getPaddleSize();
             const ballRadius = getBallSize();
