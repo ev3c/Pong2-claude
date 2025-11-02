@@ -258,8 +258,8 @@ const isTouchDevice = () => {
            (navigator.msMaxTouchPoints > 0));
 };
 
-// Variables para errores de la computadora en móviles
-let computerErrorChance = 0.3; // 30% de probabilidad de error inicial en móviles
+// Variables para errores de la computadora
+let computerErrorChance = 0.10; // 10% de probabilidad de error inicial (reducido significativamente)
 let computerReactionDelay = 0;
 
 // Función para obtener posición inicial vertical centrada
@@ -667,18 +667,19 @@ function moveComputer() {
     
     if (isSmartphone || !isSmartphone) { // Siempre aplica en ambos modos
         // Calcular probabilidad de error basada en el nivel (disminuye al subir)
-        computerErrorChance = Math.max(0.05, 0.3 - (currentLevel - 1) * 0.05);
+        // Reducida significativamente: de 10% a 2% según el nivel
+        computerErrorChance = Math.max(0.02, 0.10 - (currentLevel - 1) * 0.01);
         
-        // Agregar un margen de error aleatorio
+        // Agregar un margen de error aleatorio mucho más pequeño
         const errorMargin = Math.random() < computerErrorChance ? 
-            (Math.random() - 0.5) * 100 : 0; // Error de hasta ±50 píxeles
+            (Math.random() - 0.5) * 30 : 0; // Error de hasta ±15 píxeles (antes ±50)
         
-        // Zona muerta más grande en niveles bajos (la computadora reacciona peor)
-        const deadZone = Math.max(20, 50 - (currentLevel - 1) * 5);
+        // Zona muerta más pequeña para mejor precisión
+        const deadZone = Math.max(10, 30 - (currentLevel - 1) * 3);
         
-        // A veces la computadora "se distrae" y no sigue la pelota
-        if (Math.random() < computerErrorChance / 2) {
-            // No mover (error/distracción)
+        // La computadora rara vez se distrae (reducido significativamente)
+        if (Math.random() < computerErrorChance / 4) {
+            // No mover (error/distracción) - ahora es mucho más raro
             return;
         }
         
@@ -818,8 +819,8 @@ function checkWinner() {
             const newSpeed = Math.min(computerBaseSpeed + (currentLevel - 1) * 0.6, 8.5);
             computer.speed = newSpeed;
             
-            // Actualizar errores de la computadora para el nuevo nivel
-            computerErrorChance = Math.max(0.05, 0.3 - (currentLevel - 1) * 0.05);
+            // Actualizar errores de la computadora para el nuevo nivel (reducidos significativamente)
+            computerErrorChance = Math.max(0.02, 0.10 - (currentLevel - 1) * 0.01);
             
             // Actualizar velocidad de la pelota para el nuevo nivel
             ball.speed = getBallSpeed();
@@ -907,8 +908,8 @@ function startGame() {
     const newSpeed = Math.min(computerBaseSpeed + (currentLevel - 1) * 0.6, 8.5);
     computer.speed = newSpeed;
     
-    // Configurar errores de la computadora según el nivel
-    computerErrorChance = Math.max(0.05, 0.3 - (currentLevel - 1) * 0.05);
+    // Configurar errores de la computadora según el nivel (reducidos significativamente)
+    computerErrorChance = Math.max(0.02, 0.10 - (currentLevel - 1) * 0.01);
     
     // Establecer velocidad de la pelota según el nivel
     ball.speed = getBallSpeed();
@@ -1006,8 +1007,8 @@ function resetGame() {
     const newSpeed = Math.min(computerBaseSpeed + (currentLevel - 1) * 0.6, 8.5);
     computer.speed = newSpeed;
     
-    // Reiniciar errores de la computadora según el nivel
-    computerErrorChance = Math.max(0.05, 0.3 - (currentLevel - 1) * 0.05);
+    // Reiniciar errores de la computadora según el nivel (reducidos significativamente)
+    computerErrorChance = Math.max(0.02, 0.10 - (currentLevel - 1) * 0.01);
     
     // Establecer velocidad de la pelota según el nivel inicial
     ball.speed = getBallSpeed();
