@@ -588,7 +588,7 @@ body {
    ESTILOS PARA SMARTPHONE
    Portrait: ≤ 768px
    Landscape: ≤ 896px
-   TEXTOS AL 40% del tamaño PC
+   TEXTOS AL 20% del tamaño PC
    ======================================== */
 @media (max-width: 768px), (max-width: 896px) and (orientation: landscape) {
     body {
@@ -605,18 +605,18 @@ body {
     }
     
     .header h1 {
-        font-size: 1.6rem;
+        font-size: 0.8rem;
         letter-spacing: 1px;
         margin-bottom: 2px;
     }
     
     .version {
-        font-size: 0.6rem;
+        font-size: 0.3rem;
         letter-spacing: 0.5px;
     }
     
     .device-info {
-        font-size: 0.4rem;
+        font-size: 0.2rem;
         margin-top: 2px;
     }
     
@@ -633,13 +633,13 @@ body {
     .game-mode label {
         display: block;
         margin-bottom: 2px;
-        font-size: 0.4rem;
+        font-size: 0.2rem;
     }
     
     .mode-selector {
         width: 100%;
         padding: 4px 5px;
-        font-size: 0.4rem;
+        font-size: 0.2rem;
     }
     
     .audio-controls {
@@ -649,7 +649,7 @@ body {
     .audio-btn {
         width: 28px;
         height: 28px;
-        font-size: 0.6rem;
+        font-size: 0.3rem;
     }
     
     .instructions {
@@ -657,12 +657,12 @@ body {
     }
     
     .instructions h3 {
-        font-size: 0.4rem;
+        font-size: 0.2rem;
         margin-bottom: 4px;
     }
     
     .instructions p {
-        font-size: 0.4rem;
+        font-size: 0.2rem;
         margin: 2px 0;
         line-height: 1.2;
     }
@@ -670,7 +670,7 @@ body {
     .btn-large {
         width: 100%;
         padding: 6px 12px;
-        font-size: 0.56rem;
+        font-size: 0.28rem;
     }
     
     .game-container {
@@ -684,11 +684,11 @@ body {
     }
     
     .label {
-        font-size: 0.34rem;
+        font-size: 0.17rem;
     }
     
     .score {
-        font-size: 0.8rem;
+        font-size: 0.4rem;
     }
     
     .game-area {
@@ -721,7 +721,7 @@ body {
     .btn {
         flex: 1;
         padding: 4px 2px;
-        font-size: 0.44rem;
+        font-size: 0.22rem;
         white-space: nowrap;
     }
     
@@ -731,27 +731,27 @@ body {
     }
     
     .modal-content h2 {
-        font-size: 1rem;
+        font-size: 0.5rem;
     }
     
     .modal-content p {
-        font-size: 0.6rem;
+        font-size: 0.3rem;
     }
 }
 
-/* Smartphones pequeños - TEXTOS AL 40% del tamaño PC (rangos típicos 320px-480px) */
+/* Smartphones pequeños - TEXTOS AL 20% del tamaño PC (rangos típicos 320px-480px) */
 @media (max-width: 480px) {
     .header h1 {
-        font-size: 1.6rem;
+        font-size: 0.8rem;
         letter-spacing: 0.8px;
     }
     
     .version {
-        font-size: 0.6rem;
+        font-size: 0.3rem;
     }
     
     .device-info {
-        font-size: 0.4rem;
+        font-size: 0.2rem;
     }
     
     .menu-container,
@@ -760,39 +760,39 @@ body {
     }
     
     .game-mode label {
-        font-size: 0.4rem;
+        font-size: 0.2rem;
     }
     
     .mode-selector {
-        font-size: 0.4rem;
+        font-size: 0.2rem;
         padding: 3px 4px;
     }
     
     .audio-btn {
         width: 26px;
         height: 26px;
-        font-size: 0.6rem;
+        font-size: 0.3rem;
     }
     
     .instructions h3 {
-        font-size: 0.4rem;
+        font-size: 0.2rem;
     }
     
     .instructions p {
-        font-size: 0.4rem;
+        font-size: 0.2rem;
     }
     
     .btn-large {
         padding: 5px 10px;
-        font-size: 0.56rem;
+        font-size: 0.28rem;
     }
     
     .score {
-        font-size: 0.8rem;
+        font-size: 0.4rem;
     }
     
     .label {
-        font-size: 0.34rem;
+        font-size: 0.17rem;
     }
     
     .touch-slider,
@@ -811,7 +811,7 @@ body {
     
     .btn {
         padding: 3px 1px;
-        font-size: 0.44rem;
+        font-size: 0.22rem;
     }
 }
 
@@ -920,7 +920,7 @@ body {
     }
 }
 
-/* Optimización para modo horizontal (landscape) en móviles - TEXTOS AL 40% */
+/* Optimización para modo horizontal (landscape) en móviles - TEXTOS AL 20% */
 @media (max-width: 896px) and (orientation: landscape) {
     body {
         padding: 5px;
@@ -932,12 +932,12 @@ body {
     }
     
     .header h1 {
-        font-size: 1.6rem;
+        font-size: 0.8rem;
         letter-spacing: 3px;
     }
     
     .subtitle {
-        font-size: 0.52rem;
+        font-size: 0.26rem;
     }
     
     .menu-container {
@@ -951,13 +951,13 @@ body {
     }
     
     .game-mode label {
-        font-size: 0.4rem;
+        font-size: 0.2rem;
         margin-bottom: 5px;
     }
     
     .mode-selector {
         padding: 8px 12px;
-        font-size: 0.4rem;
+        font-size: 0.2rem;
     }
     
     .audio-controls {
@@ -967,7 +967,7 @@ body {
     .audio-btn {
         width: 45px;
         height: 45px;
-        font-size: 0.6rem;
+        font-size: 0.3rem;
     }
     
     .instructions {
@@ -975,12 +975,12 @@ body {
     }
     
     .instructions h3 {
-        font-size: 0.4rem;
+        font-size: 0.2rem;
         margin-bottom: 6px;
     }
     
     .instructions p {
-        font-size: 0.4rem;
+        font-size: 0.2rem;
         margin: 4px 0;
         line-height: 1.3;
     }
@@ -991,7 +991,7 @@ body {
     
     .btn-large {
         padding: 10px 30px;
-        font-size: 0.56rem;
+        font-size: 0.28rem;
     }
     
     .game-container {
@@ -1005,12 +1005,12 @@ body {
     }
     
     .label {
-        font-size: 0.34rem;
+        font-size: 0.17rem;
         margin-bottom: 2px;
     }
     
     .score {
-        font-size: 0.8rem;
+        font-size: 0.4rem;
     }
     
     .game-area {
@@ -1028,7 +1028,7 @@ body {
     
     .btn {
         padding: 8px 20px;
-        font-size: 0.44rem;
+        font-size: 0.22rem;
     }
     
     .audio-controls {
@@ -1038,7 +1038,7 @@ body {
     .audio-btn {
         width: 40px;
         height: 40px;
-        font-size: 0.6rem;
+        font-size: 0.3rem;
     }
     
     .instructions {
@@ -1046,12 +1046,12 @@ body {
     }
     
     .instructions h3 {
-        font-size: 0.4rem;
+        font-size: 0.2rem;
         margin-bottom: 5px;
     }
     
     .instructions p {
-        font-size: 0.4rem;
+        font-size: 0.2rem;
         margin: 5px 0;
     }
     
@@ -1069,7 +1069,7 @@ body {
     }
 }
 
-/* Pantallas pequeñas en horizontal (teléfonos pequeños) - TEXTOS AL 40% */
+/* Pantallas pequeñas en horizontal (teléfonos pequeños) - TEXTOS AL 20% */
 @media (max-height: 450px) and (orientation: landscape) {
     body {
         padding: 3px;
@@ -1085,12 +1085,12 @@ body {
     }
     
     .header h1 {
-        font-size: 1.6rem;
+        font-size: 0.8rem;
         letter-spacing: 2px;
     }
     
     .subtitle {
-        font-size: 0.52rem;
+        font-size: 0.26rem;
     }
     
     .menu-container {
@@ -1104,13 +1104,13 @@ body {
     }
     
     .game-mode label {
-        font-size: 0.4rem;
+        font-size: 0.2rem;
         margin-bottom: 4px;
     }
     
     .mode-selector {
         padding: 6px 10px;
-        font-size: 0.4rem;
+        font-size: 0.2rem;
     }
     
     .audio-controls {
@@ -1120,7 +1120,7 @@ body {
     .audio-btn {
         width: 40px;
         height: 40px;
-        font-size: 0.6rem;
+        font-size: 0.3rem;
     }
     
     .instructions {
@@ -1128,12 +1128,12 @@ body {
     }
     
     .instructions h3 {
-        font-size: 0.4rem;
+        font-size: 0.2rem;
         margin-bottom: 5px;
     }
     
     .instructions p {
-        font-size: 0.4rem;
+        font-size: 0.2rem;
         margin: 3px 0;
         line-height: 1.2;
     }
@@ -1144,7 +1144,7 @@ body {
     
     .btn-large {
         padding: 8px 20px;
-        font-size: 0.56rem;
+        font-size: 0.28rem;
     }
     
     .game-container {
@@ -1159,11 +1159,11 @@ body {
     }
     
     .label {
-        font-size: 0.34rem;
+        font-size: 0.17rem;
     }
     
     .score {
-        font-size: 0.8rem;
+        font-size: 0.4rem;
     }
     
     .game-area {
@@ -1194,7 +1194,7 @@ body {
     
     .btn {
         padding: 6px 8px;
-        font-size: 0.44rem;
+        font-size: 0.22rem;
     }
     
     /* En la pantalla de juego, mantener controles visibles pero más compactos */
@@ -1241,18 +1241,18 @@ body {
     opacity: 0.9;
 }
 
-/* Textos del overlay de rotación al 40% en smartphones */
+/* Textos del overlay de rotación al 20% en smartphones */
 @media (max-width: 768px) {
     .rotate-icon {
-        font-size: 2rem;
+        font-size: 1rem;
     }
     
     .rotate-content h2 {
-        font-size: 0.8rem;
+        font-size: 0.4rem;
     }
     
     .rotate-content p {
-        font-size: 0.48rem;
+        font-size: 0.24rem;
     }
 }
 
@@ -1274,7 +1274,7 @@ body {
     }
 }
 
-/* Optimización específica para móviles en portrait - TEXTOS AL 40% */
+/* Optimización específica para móviles en portrait - TEXTOS AL 20% */
 @media (max-width: 768px) and (orientation: portrait) {
     body {
         padding: 2px;
@@ -1291,12 +1291,12 @@ body {
     }
     
     .header h1 {
-        font-size: 1.6rem;
+        font-size: 0.8rem;
         letter-spacing: 1px;
     }
     
     .version {
-        font-size: 0.6rem;
+        font-size: 0.3rem;
     }
     
     .menu-container {
@@ -1314,11 +1314,11 @@ body {
     }
     
     .label {
-        font-size: 0.34rem;
+        font-size: 0.17rem;
     }
     
     .score {
-        font-size: 0.8rem;
+        font-size: 0.4rem;
     }
     
     .game-area {
