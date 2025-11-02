@@ -4,8 +4,8 @@ const ctx = canvas.getContext('2d');
 
 // Variables de orientación
 let isPortrait = false;
-let canvasBaseWidth = 800;
-let canvasBaseHeight = 500;
+let canvasBaseWidth = window.innerWidth * 0.8; // Ajustar dinámicamente al 80% del ancho de pantalla
+let canvasBaseHeight = 400;
 
 // Funciones de pantalla completa y orientación deshabilitadas por preferencia del usuario
 
@@ -23,26 +23,28 @@ function adjustCanvasSize() {
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
     
-    // Determinar tipo de dispositivo
-    let isTablet, isSmartphone;
+    // Determinar tipo de dispositivo - Solo dos modos: Tablet (por defecto) y Smartphone
+    let isSmartphone;
     
     if (isPortrait) {
         // Portrait mode
         isSmartphone = screenWidth <= 768;
-        isTablet = screenWidth > 768 && screenWidth <= 1024;
     } else {
         // Landscape mode
         isSmartphone = screenWidth <= 896;
-        isTablet = screenWidth > 896 && screenWidth <= 1366;
     }
     
-    if (isTouchDevice()) {
+    // Tablet es el modo por defecto para todo lo que no sea smartphone
+    const isTablet = !isSmartphone;
+    
+    // Usar lógica de tablet/smartphone sin importar si es táctil o no
+    if (true) {
         if (isPortrait) {
             // MODO VERTICAL - Calcular dinámicamente el ancho disponible
-            // Leer el ancho real de los sliders si existen
-            let leftSliderWidth = 8;
-            let rightSliderWidth = 8;
-            let gapTotal = 2;
+            // Leer el ancho real de los sliders si existen (valores por defecto según el modo)
+            let leftSliderWidth = isTablet ? 38 : 8;
+            let rightSliderWidth = isTablet ? 38 : 8;
+            let gapTotal = isTablet ? 20 : 2;
             
             if (touchSliderLeft && window.getComputedStyle) {
                 leftSliderWidth = parseFloat(window.getComputedStyle(touchSliderLeft).width) || 8;
@@ -58,14 +60,16 @@ function adjustCanvasSize() {
                 gapTotal = gap * 2;
             }
             
-            // Calcular ancho del canvas dejando espacio para sliders
+            // Calcular ancho del canvas para ocupar TODO el espacio disponible
             const slidersTotalWidth = leftSliderWidth + rightSliderWidth + gapTotal;
             const containerPadding = isTablet ? 60 : 10; // Padding del game-container
-            const availableWidth = screenWidth - slidersTotalWidth - containerPadding;
+            const bodyPadding = isTablet ? 40 : 4; // Padding del body
+            const availableWidth = screenWidth - slidersTotalWidth - containerPadding - bodyPadding;
             
-            // Aplicar reducción del 20% para smartphones (dejar al 80%)
+            // Usar 100% del espacio disponible
+            // Aplicar reducción del 20% solo para smartphones
             const sizeMultiplier = isSmartphone ? 0.8 : 1.0;
-            canvasBaseWidth = Math.floor(Math.max(200, availableWidth * 0.95 * sizeMultiplier));
+            canvasBaseWidth = Math.floor(Math.max(200, availableWidth * sizeMultiplier));
             
             if (isTablet) {
                 const reservedHeight = 280;
@@ -77,7 +81,8 @@ function adjustCanvasSize() {
             
             const paddleInfo = getPaddleSize();
             const ballRadius = getBallSize();
-            console.log('📱 Portrait:', {
+            const deviceType = isSmartphone ? '📱 Smartphone' : '💻 Tablet';
+            console.log(`${deviceType} Portrait:`, {
                 screen: `${screenWidth}x${screenHeight}`,
                 sliders: `L:${leftSliderWidth}px R:${rightSliderWidth}px`,
                 canvas: `${canvasBaseWidth}x${canvasBaseHeight}`,
@@ -85,10 +90,10 @@ function adjustCanvasSize() {
                 ball: `r=${ballRadius}px`
             });
         } else {
-            // MODO HORIZONTAL - Calcular dinámicamente
-            let leftSliderWidth = 8;
-            let rightSliderWidth = 8;
-            let gapTotal = 2;
+            // MODO HORIZONTAL - Calcular dinámicamente (valores por defecto según el modo)
+            let leftSliderWidth = isTablet ? 38 : 8;
+            let rightSliderWidth = isTablet ? 38 : 8;
+            let gapTotal = isTablet ? 20 : 2;
             
             // Leer anchos reales de los sliders
             if (touchSliderLeft && window.getComputedStyle) {
@@ -105,15 +110,15 @@ function adjustCanvasSize() {
                 gapTotal = gap * 2;
             }
             
-            // Calcular espacio ocupado
+            // Calcular espacio ocupado para usar TODO el ancho disponible
             const bodyPadding = isTablet ? 24 : (screenHeight < 450 ? 6 : 10);
             const containerPadding = isTablet ? 40 : (screenHeight < 450 ? 10 : 20);
-            const marginSafety = isSmartphone ? 5 : 15;
             
             const sliderSpace = leftSliderWidth + rightSliderWidth + gapTotal + 
-                              bodyPadding + containerPadding + marginSafety;
+                              bodyPadding + containerPadding;
             
-            // Aplicar reducción del 20% para smartphones (dejar al 80%)
+            // Usar 100% del espacio disponible
+            // Aplicar reducción del 20% solo para smartphones
             const sizeMultiplier = isSmartphone ? 0.8 : 1.0;
             canvasBaseWidth = Math.floor(Math.max(300, (screenWidth - sliderSpace) * sizeMultiplier));
             
@@ -123,7 +128,8 @@ function adjustCanvasSize() {
             
             const paddleInfo = getPaddleSize();
             const ballRadius = getBallSize();
-            console.log('📱 Landscape:', {
+            const deviceType = isSmartphone ? '📱 Smartphone' : '💻 Tablet';
+            console.log(`${deviceType} Landscape:`, {
                 screen: `${screenWidth}x${screenHeight}`,
                 sliders: `L:${leftSliderWidth}px R:${rightSliderWidth}px`,
                 sliderSpace: `${sliderSpace}px`,
@@ -132,47 +138,6 @@ function adjustCanvasSize() {
                 ball: `r=${ballRadius}px`
             });
         }
-    } else {
-        // LAPTOP/DESKTOP: Calcular dinámicamente
-        let leftSliderWidth = 40;
-        let rightSliderWidth = 40;
-        let gapTotal = 30;
-        
-        // Leer anchos reales de los sliders
-        if (touchSliderLeft && window.getComputedStyle) {
-            leftSliderWidth = parseFloat(window.getComputedStyle(touchSliderLeft).width) || 40;
-        }
-        if (touchSlider && window.getComputedStyle) {
-            rightSliderWidth = parseFloat(window.getComputedStyle(touchSlider).width) || 40;
-        }
-        
-        // Obtener el gap del CSS
-        const gameArea = document.querySelector('.game-area');
-        if (gameArea && window.getComputedStyle) {
-            const gap = parseFloat(window.getComputedStyle(gameArea).gap) || 15;
-            gapTotal = gap * 2;
-        }
-        
-        const bodyPadding = 40;
-        const containerPadding = 60;
-        const marginSafety = 20;
-        const sliderSpace = leftSliderWidth + rightSliderWidth + gapTotal + 
-                          bodyPadding + containerPadding + marginSafety;
-        
-        const availableWidth = Math.min(window.innerWidth, 1200) - sliderSpace;
-        canvasBaseWidth = Math.min(700, Math.max(500, availableWidth));
-        canvasBaseHeight = 500;
-        
-        const paddleInfo = getPaddleSize();
-        const ballRadius = getBallSize();
-        console.log('💻 DESKTOP:', {
-            screen: `${screenWidth}x${screenHeight}`,
-            sliders: `L:${leftSliderWidth}px R:${rightSliderWidth}px`,
-            sliderSpace: `${sliderSpace}px`,
-            canvas: `${canvasBaseWidth}x${canvasBaseHeight}`,
-            paddle: `${paddleInfo.width}x${paddleInfo.height}px`,
-            ball: `r=${ballRadius}px`
-        });
     }
     
     // Aplicar nuevo tamaño
@@ -302,33 +267,23 @@ function getCenterY() {
 
 // Función para obtener tamaño de palas según el dispositivo
 function getPaddleSize() {
-    if (isTouchDevice()) {
-        // En smartphones/tablets las palas son más pequeñas
-        const screenWidth = window.innerWidth;
-        const screenHeight = window.innerHeight;
-        const isPortraitMode = screenHeight > screenWidth;
-        
-        let isSmartphone;
-        if (isPortraitMode) {
-            isSmartphone = screenWidth <= 768;
-        } else {
-            isSmartphone = screenWidth <= 896;
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    
+    // Determinar si es smartphone
+    const isPortraitMode = screenHeight > screenWidth;
+    const isSmartphone = isPortraitMode ? screenWidth <= 768 : screenWidth <= 896;
+    
+    if (isSmartphone) {
+        // SMARTPHONE: palas muy pequeñas para maximizar espacio de juego
+        if (screenHeight < 450 && !isPortraitMode) {
+            // Pantallas muy pequeñas en horizontal: ultra pequeñas
+            return { width: 3, height: 25 };
         }
-        
-        if (isSmartphone) {
-            // Smartphones: palas EXTREMADAMENTE pequeñas para maximizar espacio de juego
-            if (screenHeight < 450 && !isPortraitMode) {
-                // Pantallas muy pequeñas en horizontal: ultra pequeñas
-                return { width: 3, height: 25 };
-            }
-            return { width: 4, height: 30 };
-        } else {
-            // Tablets: palas medianas
-            return { width: 8, height: 55 };
-        }
+        return { width: 4, height: 30 };
     } else {
-        // Desktop: palas tamaño normal
-        return { width: 10, height: 70 };
+        // TABLET (por defecto): palas medianas
+        return { width: 8, height: 55 };
     }
 }
 
@@ -354,32 +309,23 @@ const computer = {
 
 // Función para obtener tamaño de pelota según el dispositivo
 function getBallSize() {
-    if (isTouchDevice()) {
-        const screenWidth = window.innerWidth;
-        const screenHeight = window.innerHeight;
-        const isPortraitMode = screenHeight > screenWidth;
-        
-        let isSmartphone;
-        if (isPortraitMode) {
-            isSmartphone = screenWidth <= 768;
-        } else {
-            isSmartphone = screenWidth <= 896;
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    const isPortraitMode = screenHeight > screenWidth;
+    
+    // Determinar si es smartphone
+    const isSmartphone = isPortraitMode ? screenWidth <= 768 : screenWidth <= 896;
+    
+    if (isSmartphone) {
+        // SMARTPHONE: pelota más pequeña y proporcional a las palas
+        if (screenHeight < 450 && !isPortraitMode) {
+            // Pantallas muy pequeñas: pelota muy pequeña
+            return 3.5;
         }
-        
-        if (isSmartphone) {
-            // Smartphones: pelota más pequeña y proporcional a las palas
-            if (screenHeight < 450 && !isPortraitMode) {
-                // Pantallas muy pequeñas: pelota muy pequeña
-                return 3.5;
-            }
-            return 4;
-        } else {
-            // Tablets: pelota mediana
-            return 6;
-        }
+        return 4;
     } else {
-        // Desktop: pelota tamaño normal
-        return 8;
+        // TABLET (por defecto): pelota mediana
+        return 6;
     }
 }
 
@@ -497,8 +443,9 @@ function drawRoundedRect(x, y, width, height, radius) {
 // Dibujar la paleta del jugador
 function drawPlayer() {
     ctx.fillStyle = '#00ff88';
-    // Ajustar shadowBlur según el tamaño de la pala
-    const shadowSize = isTouchDevice() ? 8 : 15;
+    // Ajustar shadowBlur según el dispositivo
+    const isSmartphone = window.innerWidth <= (window.innerHeight > window.innerWidth ? 768 : 896);
+    const shadowSize = isSmartphone ? 8 : 15;
     ctx.shadowBlur = shadowSize;
     ctx.shadowColor = '#00ff88';
     // Radio de borde proporcional al ancho de la pala
@@ -510,8 +457,9 @@ function drawPlayer() {
 // Dibujar la paleta de la computadora
 function drawComputer() {
     ctx.fillStyle = '#ff4757';
-    // Ajustar shadowBlur según el tamaño de la pala
-    const shadowSize = isTouchDevice() ? 8 : 15;
+    // Ajustar shadowBlur según el dispositivo
+    const isSmartphone = window.innerWidth <= (window.innerHeight > window.innerWidth ? 768 : 896);
+    const shadowSize = isSmartphone ? 8 : 15;
     ctx.shadowBlur = shadowSize;
     ctx.shadowColor = '#ff4757';
     // Radio de borde proporcional al ancho de la pala
@@ -524,7 +472,8 @@ function drawComputer() {
 function drawBall() {
     ctx.fillStyle = '#ffa502';
     // Ajustar shadowBlur según el dispositivo
-    const shadowSize = isTouchDevice() ? 10 : 20;
+    const isSmartphone = window.innerWidth <= (window.innerHeight > window.innerWidth ? 768 : 896);
+    const shadowSize = isSmartphone ? 10 : 20;
     ctx.shadowBlur = shadowSize;
     ctx.shadowColor = '#ffa502';
     ctx.beginPath();
@@ -570,7 +519,8 @@ function draw() {
         ctx.shadowBlur = 10;
         ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
         
-        const message = isTouchDevice() ? '👆 Toca para Continuar' : '🖱️ Haz Clic para Continuar';
+        const isSmartphone = window.innerWidth <= (window.innerHeight > window.innerWidth ? 768 : 896);
+        const message = isSmartphone ? '👆 Toca para Continuar' : '🖱️ Haz Clic para Continuar';
         ctx.fillText(message, canvas.width / 2, canvas.height / 2);
         
         // Animación de pulso
@@ -651,8 +601,12 @@ function moveComputer() {
     // Modo 1 jugador - IA de la computadora
     const computerCenter = computer.y + computer.height / 2;
     
-    // En móviles, agregar errores y retrasos según el nivel
-    if (isTouchDevice()) {
+    // En smartphones y tablets, agregar errores y retrasos según el nivel
+    const screenWidth = window.innerWidth;
+    const isPortraitMode = window.innerHeight > screenWidth;
+    const isSmartphone = isPortraitMode ? screenWidth <= 768 : screenWidth <= 896;
+    
+    if (isSmartphone || !isSmartphone) { // Siempre aplica en ambos modos
         // Calcular probabilidad de error basada en el nivel (disminuye al subir)
         computerErrorChance = Math.max(0.05, 0.3 - (currentLevel - 1) * 0.05);
         
@@ -724,18 +678,13 @@ function moveBall() {
         ball.dx = -Math.abs(ball.dx);
         ball.dy = ball.speed * Math.sin(angle);
         
-        // Aumentar ligeramente la velocidad (mucho menos en smartphones)
-        let speedIncrease;
-        if (isTouchDevice()) {
-            const screenWidth = window.innerWidth;
-            const screenHeight = window.innerHeight;
-            const isPortraitMode = screenHeight > screenWidth;
-            const isSmartphone = isPortraitMode ? screenWidth <= 768 : screenWidth <= 896;
-            
-            speedIncrease = isSmartphone ? 1.005 : 1.01; // Smartphones: casi sin incremento
-        } else {
-            speedIncrease = 1.03; // Desktop: incremento normal
-        }
+        // Aumentar ligeramente la velocidad según el dispositivo
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        const isPortraitMode = screenHeight > screenWidth;
+        const isSmartphone = isPortraitMode ? screenWidth <= 768 : screenWidth <= 896;
+        
+        const speedIncrease = isSmartphone ? 1.005 : 1.01; // Smartphones: casi sin incremento, Tablet: incremento pequeño
         
         ball.speed *= speedIncrease;
         ball.dx = -ball.speed * Math.cos(angle);
@@ -755,18 +704,13 @@ function moveBall() {
         ball.dx = Math.abs(ball.dx);
         ball.dy = ball.speed * Math.sin(angle);
         
-        // Aumentar ligeramente la velocidad (mucho menos en smartphones)
-        let speedIncrease;
-        if (isTouchDevice()) {
-            const screenWidth = window.innerWidth;
-            const screenHeight = window.innerHeight;
-            const isPortraitMode = screenHeight > screenWidth;
-            const isSmartphone = isPortraitMode ? screenWidth <= 768 : screenWidth <= 896;
-            
-            speedIncrease = isSmartphone ? 1.005 : 1.01; // Smartphones: casi sin incremento
-        } else {
-            speedIncrease = 1.03; // Desktop: incremento normal
-        }
+        // Aumentar ligeramente la velocidad según el dispositivo
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        const isPortraitMode = screenHeight > screenWidth;
+        const isSmartphone = isPortraitMode ? screenWidth <= 768 : screenWidth <= 896;
+        
+        const speedIncrease = isSmartphone ? 1.005 : 1.01; // Smartphones: casi sin incremento, Tablet: incremento pequeño
         
         ball.speed *= speedIncrease;
         ball.dx = ball.speed * Math.cos(angle);
@@ -807,28 +751,17 @@ function resetBall() {
     ball.y = canvas.height / 2;
     
     // Velocidad ajustada según el dispositivo
-    if (isTouchDevice()) {
-        const screenWidth = window.innerWidth;
-        const screenHeight = window.innerHeight;
-        const isPortraitMode = screenHeight > screenWidth;
-        
-        let isSmartphone;
-        if (isPortraitMode) {
-            isSmartphone = screenWidth <= 768;
-        } else {
-            isSmartphone = screenWidth <= 896;
-        }
-        
-        if (isSmartphone) {
-            // Smartphones: velocidad más lenta para mejor jugabilidad
-            ball.speed = 2.0;
-        } else {
-            // Tablets: velocidad intermedia
-            ball.speed = 2.5;
-        }
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    const isPortraitMode = screenHeight > screenWidth;
+    const isSmartphone = isPortraitMode ? screenWidth <= 768 : screenWidth <= 896;
+    
+    if (isSmartphone) {
+        // Smartphones: velocidad más lenta para mejor jugabilidad
+        ball.speed = 2.0;
     } else {
-        // Desktop: velocidad normal
-        ball.speed = 3.5;
+        // Tablet (por defecto): velocidad intermedia
+        ball.speed = 2.5;
     }
     
     ball.dx = (Math.random() > 0.5 ? 1 : -1) * ball.speed;
@@ -858,11 +791,7 @@ function checkWinner() {
             computer.speed = newSpeed;
             
             let message = `🎉 ¡Pasas al Nivel ${currentLevel}! `;
-            if (isTouchDevice()) {
-                message += 'La computadora será más rápida y cometerá menos errores 🚀';
-            } else {
-                message += 'La computadora será más rápida 🚀';
-            }
+            message += 'La computadora será más rápida y cometerá menos errores 🚀';
             
             endGame(
                 `¡Nivel ${currentLevel - 1} Completado!`, 
@@ -1024,10 +953,8 @@ function resetGame() {
     levelNumber.textContent = currentLevel;
     computer.speed = computerBaseSpeed;
     
-    // Reiniciar errores de la computadora en móviles
-    if (isTouchDevice()) {
-        computerErrorChance = 0.3; // Volver a 30% de error inicial
-    }
+    // Reiniciar errores de la computadora
+    computerErrorChance = 0.3; // Volver a 30% de error inicial
     
     updateScore();
     
