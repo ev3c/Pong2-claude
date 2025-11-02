@@ -337,14 +337,35 @@ function getBallSpeed() {
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
     const isPortraitMode = screenHeight > screenWidth;
-    const isSmartphone = isPortraitMode ? screenWidth <= 768 : screenWidth <= 896;
     
-    // Velocidad base según dispositivo
+    // Determinar tipo de dispositivo
+    let deviceType = 'desktop'; // Por defecto
     let baseSpeed;
-    if (isSmartphone) {
-        baseSpeed = 2.0; // Smartphones: velocidad más lenta
+    
+    if (isPortraitMode) {
+        // Modo Portrait (Vertical)
+        if (screenWidth <= 768) {
+            deviceType = 'smartphone';
+            baseSpeed = 2.0; // Smartphones: velocidad más lenta
+        } else if (screenWidth > 768 && screenWidth <= 1024) {
+            deviceType = 'tablet';
+            baseSpeed = 2.5; // Tablets: velocidad intermedia
+        } else {
+            deviceType = 'desktop';
+            baseSpeed = 3.5; // Desktop: velocidad rápida
+        }
     } else {
-        baseSpeed = 2.5; // Tablet/Desktop: velocidad intermedia
+        // Modo Landscape (Horizontal)
+        if (screenWidth <= 896) {
+            deviceType = 'smartphone';
+            baseSpeed = 2.0; // Smartphones: velocidad más lenta
+        } else if (screenWidth > 896 && screenWidth <= 1366) {
+            deviceType = 'tablet';
+            baseSpeed = 2.5; // Tablets: velocidad intermedia
+        } else {
+            deviceType = 'desktop';
+            baseSpeed = 3.5; // Desktop: velocidad rápida
+        }
     }
     
     // Aumentar velocidad según el nivel (10% por nivel)
@@ -352,7 +373,11 @@ function getBallSpeed() {
     // Nivel 10: velocidad base * 1.9
     const levelMultiplier = 1 + (currentLevel - 1) * 0.1;
     
-    return baseSpeed * levelMultiplier;
+    const finalSpeed = baseSpeed * levelMultiplier;
+    
+    console.log(`⚡ Velocidad pelota: ${finalSpeed.toFixed(2)} (Dispositivo: ${deviceType}, Nivel: ${currentLevel})`);
+    
+    return finalSpeed;
 }
 
 // Pelota
